@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Data Exploration and Visualisation Hub · SMEPH_261</title>
+<link rel="stylesheet" href="css/hub.css">
+</head>
+<body>
+<div class="app">
+  <nav class="rail" id="nav" aria-label="Pages">
+    <a class="brand" href="#/overview"><span class="dot"></span>SMEPH_261 Data Hub</a>
+    <a data-view="overview" href="#/overview">Overview</a>
+    <div class="grp">Instruments</div>
+    <a data-view="inventory" href="#/inventory">Inventory</a>
+    <a data-view="validated" href="#/validated">Validated</a>
+    <a data-view="compare" href="#/compare">Compare <span id="cmpCount" class="cnt"></span></a>
+    <div class="grp">Evidence</div>
+    <a data-view="measured" href="#/measured">How measured</a>
+    <a data-view="themes" href="#/themes">Health themes</a>
+    <a data-view="gaps" href="#/gaps">Gaps</a>
+    <a data-view="sources" href="#/sources">Sources</a>
+    <div class="grp">Reference</div>
+    <a data-view="downloads" href="#/downloads">Downloads</a>
+    <a data-view="about" href="#/about">About and methods</a>
+  </nav>
+  <div class="main">
+    <div id="pickbar" class="pickbar"></div>
+    <main id="view" tabindex="-1"><p class="muted">Loading…</p></main>
+    <footer class="foot" id="foot"></footer>
+  </div>
+</div>
+<aside id="panel" class="drawer" role="dialog" aria-label="Details" hidden></aside>
+<div id="tip" class="tip" role="status"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
