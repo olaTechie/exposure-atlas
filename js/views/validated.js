@@ -1,4 +1,4 @@
-import { h, put, fmt, tabs, instLink, acr, csvButton, pageHead, panelBox, isValidated, DASH, dimList, reporters, usableTag, usableText, tag, plural } from '../ui.js';
+import { h, put, fmt, tabs, instLink, acr, csvButton, pageHead, panelBox, isValidated, DASH, dimList, reporters, usableTag, usableText, tag, plural, doorHref } from '../ui.js';
 import { pickerMatch, ALL } from '../logic.js';
 import { gridTable } from '../tables.js';
 import { figureBox, stacks, ageStrip, ageStripKey, objectiveHead } from '../figures.js';
@@ -47,24 +47,27 @@ export default function validated(el, params, DB) {
   const csCols = Object.keys(CS[0]).filter(k => !k.startsWith('Risk of bias'));
   const properties = figureBox({ title: 'Measurement properties of the named instruments', note: `N = ${fmt(CS[0][kN])} named instruments in every bar · categories do not overlap`,
     figure: h('div', {}, stacks(CS, { label: r => r[kProp], keys: DB.labels.ratings.map(k => ({ key: k, label: k, cls: RATING_CLS[k] || 's-mid' })),
-      total: r => r[kN], unit: 'named instruments', value: r => `${fmt(r[kAssessed])} assessed` }),
+      total: r => r[kN], unit: 'named instruments', value: r => `${fmt(r[kAssessed])} assessed`,
+      door: (r, key) => doorHref('instruments', { kind: ['Named instrument'], ['prop:' + r[kProp]]: [key] }, r[key]) }),
     h('p', { class: 'note' }, 'Each bar is all the named instruments. For each measurement property an instrument has one rating against the COSMIN criteria, pooled across its results, or it was not assessed in any included source.')),
     table: () => gridTable(CS, csCols.map((k, n) => ({ key: k, num: n > 0, fmt: v => (typeof v === 'number' ? fmt(v) : v) }))) });
 
   // ---- objective 4: who reports, by age band
-  const repRows = DB.tables.measures.filter(r => r.Characteristic.startsWith('Main reporter, measures in sources covering ages'));
+  const repRows = DB.tables.measures.filter(r => r.Characteristic.startsWith('Main reporter, question-based measures in sources covering ages'));
+  if (!repRows.length) throw new Error('The master tables hold no rows for the main reporter by age band');
   const repChars = [...new Set(repRows.map(r => r.Characteristic))], repCats = [...new Set(repRows.map(r => r.Category))];
   const byBand = repChars.map((c, k) => { const rs = repRows.filter(r => r.Characteristic === c);
     return { band: DB.labels.bands[k] ?? c, N: rs[0].N, ...Object.fromEntries(rs.map(r => [r.Category, r.n])) }; });
-  const reporterFig = figureBox({ title: 'Who reports, by age band', note: 'unit: measures in sources covering the age band · one main reporter per measure, so categories do not overlap',
-    figure: h('div', {}, stacks(byBand, { label: r => r.band, keys: repCats.map((k, n) => ({ key: k, label: k, cls: SEG[n] || 's-other' })), total: r => r.N, unit: 'measures', value: r => `N = ${fmt(r.N)}` }),
+  const reporterFig = figureBox({ title: 'Who reports, by age band', note: 'unit: question-based measures in sources covering the age band · one main reporter per measure, so categories do not overlap',
+    figure: h('div', {}, stacks(byBand, { label: r => r.band, keys: repCats.map((k, n) => ({ key: k, label: k, cls: SEG[n] || 's-other' })), total: r => r.N, unit: 'measures', value: r => `N = ${fmt(r.N)}`,
+      door: (r, key) => doorHref('measures', { group: ['Question-based'], band: [r.band], reporter: [key] }, r[key]) }),
     h('p', { class: 'note' }, 'A source that covers several age bands counts in each, so the four bars overlap with each other. The bars are the same length whatever the N, which is given at the right.')),
     table: () => gridTable(byBand, [{ key: 'band', label: 'Age band' }, ...repCats.map(k => ({ key: k, num: true, fmt: v => fmt(v ?? 0) })), { key: 'N', label: 'Measures (N)', num: true, fmt: v => fmt(v) }]) });
   const obj = n => objectiveHead(DB.objectives.find(o => o.n === n));
 
   put(el,
     pageHead('Validated instruments',
-      `${fmt(all.length)} of the ${fmt(nNamed)} named instruments meet the validation rule: at least one reliability-type and one validity-type measurement property with a result rated sufficient (COSMIN) in a sample aged 0 to 17. Unit: instruments.`),
+      `The validation rule is met by ${fmt(all.length)} of the ${fmt(nNamed)} named instruments: at least one reliability-type and one validity-type measurement property with a result rated sufficient (COSMIN) in a sample aged 0 to 17. Unit: instruments.`),
     obj(3), properties,
     obj(4), reporterFig,
     h('h2', { class: 'list-head' }, 'The validated instruments'),
@@ -82,9 +85,9 @@ export default function validated(el, params, DB) {
         tbody)),
       h('div', { class: 'in' },
         ageStripKey(),
-        h('p', { class: 'note' }, h('b', {}, 'Usable at '), 'is given for the instruments that measure exposure: the age bands in which the instrument meets all four conditions, or the reason it meets them in none.'),
+        h('p', { class: 'note' }, h('b', {}, 'Usable at '), 'is given for the instruments that measure exposure: the age bands in which the instrument meets all four readiness criteria, or the reason it meets them in none.'),
         h('p', { class: 'note' }, h('b', {}, 'Problematic-use scales are not exposure measures. '),
           'They ask about symptoms of problematic use, such as loss of control or conflict, and not about how long, on which platforms, why, in what context or with what content young people use social media. They are therefore not counted in the tailoring matrix.'),
-        h('p', { class: 'note' }, `${fmt(F['Validated in a single study'])} of the ${fmt(F['Meet the validation rule'])} validated instruments rest on a single validating study.`))));
+        h('p', { class: 'note' }, `Of the ${fmt(F['Meet the validation rule'])} validated instruments, ${fmt(F['Validated in a single study'])} rest on a single validating study.`))));
   draw();
 }

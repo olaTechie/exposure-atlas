@@ -1,6 +1,6 @@
 // Figures drawn by hand: bars, stacked bars, shaded grids and the parts they share.
 // They draw what hub.json holds. The rules behind them (shares, shades, keyboard movement) are in logic.js.
-import { h, fmt } from './ui.js';
+import { h, fmt, doorHref } from './ui.js';
 import { share, shade, inkOn, rove, pctf, dotOrder, stepCounts, dotState, stopReason, startStep, countFrame, tapAction, STEP_LABELS } from './logic.js';
 
 export const calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -103,20 +103,24 @@ export function figureBox({ title, note, figure, table, extra = [], foot = null 
 // ---------------------------------------------------------------- bars
 // One horizontal bar per row, from zero. opts: label(r), n(r), N(r) (may be null), unit, mark(r) -> text or null,
 // sub(r) -> a line of small text under the label, onPick(r), scale: 'N' (bar = share of N) or 'max' (bar = share of the
-// largest n), rule: {before: index, text}.
-export function bars(rows, { label, n, N = () => null, unit = '', mark = () => null, sub = () => null, onPick = null, scale = 'N', rule = null }) {
+// largest n), rule: {before: index, text}, group(r) -> a heading put above the first row of each group,
+// door(r) -> the address Explore opens at for this row, or null.
+export function bars(rows, { label, n, N = () => null, unit = '', mark = () => null, sub = () => null, onPick = null, scale = 'N', rule = null, group = null, door = null }) {
   const top = Math.max(0, ...rows.map(n));
   const list = h('div', { class: 'bar-list' });
+  let lastGroup = null;
   rows.forEach((r, k) => {
     if (rule && rule.before === k) list.append(h('div', { class: 'bar-rule' }, rule.text));
+    if (group) { const g = group(r); if (g !== lastGroup) { if (g) list.append(h('div', { class: 'bar-rule grp' }, g)); lastGroup = g; } }
     const v = n(r), of = N(r), w = scale === 'max' ? share(v, top) : share(v, of);
-    const m = mark(r), text = nOf(v, of);
-    const row = h(onPick ? 'button' : 'div', { class: 'bar-row' + (onPick ? ' pick' : ''), 'aria-label': `${label(r)}${m ? ', ' + m : ''}: ${nOf(v, of, unit)}` },
+    const m = mark(r), text = nOf(v, of), to = door ? door(r) : null;
+    const act = onPick ? () => onPick(r) : to ? () => { location.hash = to; } : null;
+    const row = h(act ? 'button' : 'div', { class: 'bar-row' + (act ? ' pick' : ''), 'aria-label': `${label(r)}${m ? ', ' + m : ''}: ${nOf(v, of, unit)}` },
       h('span', { class: 'lab' }, label(r), m ? h('span', { class: 'mark' }, m) : null, sub(r) ? h('span', { class: 'sub' }, sub(r)) : null),
       h('span', { class: 'bar-track' }, h('span', { class: 'bar-fill', style: { width: Math.max(0, Math.min(100, 100 * w)) + '%' } })),
       h('span', { class: 'val' }, text));
-    tip(row, () => ({ title: label(r) + (m ? ` (${m})` : ''), text: nOf(v, of, unit) }));
-    if (onPick) { row.type = 'button'; row.addEventListener('click', () => onPick(r)); } else row.setAttribute('role', 'img');
+    tip(row, () => ({ title: label(r) + (m ? ` (${m})` : ''), text: nOf(v, of, unit) + (to ? '. Select to open in Explore.' : '') }));
+    if (act) { row.type = 'button'; row.addEventListener('click', act); } else row.setAttribute('role', 'img');
     list.append(row);
   });
   roving(list, '.bar-row');
@@ -125,44 +129,59 @@ export function bars(rows, { label, n, N = () => null, unit = '', mark = () => n
 
 // ---------------------------------------------------------------- stacked bars
 // One stacked bar per row. keys: [{key, label, cls}] in a fixed order; total(r) is the row's N; label(r) its name.
-export function stacks(rows, { label, keys, total, unit = '', value = null }) {
+export function stacks(rows, { label, keys, total, unit = '', value = null, legend: showLegend = true, door = null }) {
   const legend = h('div', { class: 'stk-key' }, keys.map(k => h('span', {}, h('i', { class: k.cls }), k.label)));
   const list = h('div', { class: 'stk-list' });
   rows.forEach(r => {
     const N = total(r);
     const track = h('span', { class: 'stk-track' }, keys.filter(k => r[k.key] > 0).map(k => {
       const seg = h('button', { class: `stk-seg ${k.cls}`, type: 'button', style: { flexGrow: r[k.key] }, 'aria-label': `${label(r)}, ${k.label}: ${nOf(r[k.key], N, unit)}` });
-      return tip(seg, () => ({ title: `${label(r)}: ${k.label}`, text: nOf(r[k.key], N, unit) }));
+      const to = door ? door(r, k.key) : null;
+      tip(seg, () => ({ title: `${label(r)}: ${k.label}`, text: nOf(r[k.key], N, unit) + (to ? '. Select to open in Explore.' : '') }));
+      if (to) { seg.classList.add('pick'); seg.addEventListener('click', () => { location.hash = to; }); }
+      return seg;
     }));
     roving(track, '.stk-seg', keys.length);
     list.append(h('div', { class: 'stk-row' }, h('span', { class: 'lab' }, label(r)), track, h('span', { class: 'val' }, value ? value(r) : `N = ${fmt(N)}`)));
   });
-  return h('div', {}, legend, list);
+  return h('div', {}, showLegend ? legend : null, list);
 }
 
 // ---------------------------------------------------------------- shaded grid
 // rows: objects. rowKey: the row-name column. cols: column keys. total: the row-total column. Returns { node, setMode }.
 // mode 'share': each cell is its share of the row; 'count': the number, shaded against the largest cell outside total rows.
-export function shadeGrid(rows, { rowKey, cols, total, rowLabel = v => v, colLabel = v => v, totalRow = () => false, unit = '', totalHead = 'Total', corner = '' }) {
-  const colTh = cols.map(c => h('th', { scope: 'col' }, colLabel(c)));
+// groups: [{label, cols}] puts those columns first under a shared heading; rowGroup(r) -> a heading above each group of rows.
+export function shadeGrid(rows, { rowKey, cols: allCols, total, rowLabel = v => v, colLabel = v => v, totalRow = () => false, unit = '', totalHead = 'Total', corner = '', groups = null, rowGroup = null, door = null }) {
+  const grouped = groups ? groups.flatMap(g => g.cols) : [];
+  const cols = [...grouped, ...allCols.filter(c => !grouped.includes(c))];
+  const starts = new Set(groups ? [...groups.map(g => g.cols[0]), cols[grouped.length]].filter(Boolean) : []);
+  const colTh = cols.map(c => h('th', { scope: 'col', class: starts.has(c) ? 'gstart' : null }, colLabel(c)));
   const max = Math.max(0, ...rows.filter(r => !totalRow(r)).flatMap(r => cols.map(c => r[c])));
   const cells = [];
-  const body = rows.map(r => {
+  let lastRowGroup = null;
+  const body = rows.flatMap(r => {
     const th = h('th', { scope: 'row' }, rowLabel(r[rowKey]));
-    return h('tr', { class: totalRow(r) ? 'total' : null }, th, cols.map((c, k) => {
+    const g = rowGroup ? rowGroup(r) : null, head = g && g !== lastRowGroup ? h('tr', { class: 'rowgroup' }, h('th', { colspan: cols.length + 2, scope: 'colgroup' }, g)) : null;
+    if (rowGroup) lastRowGroup = g;
+    return [head, h('tr', { class: totalRow(r) ? 'total' : null }, th, cols.map((c, k) => {
       const d = h('div', { class: 'grid-cell', role: 'img' });
       const hot = on => { th.classList.toggle('hot', on); colTh[k].classList.toggle('hot', on); };
       d.addEventListener('mouseenter', () => hot(true)); d.addEventListener('mouseleave', () => hot(false));
       d.addEventListener('focus', () => hot(true)); d.addEventListener('blur', () => hot(false));
       const says = () => `${rowLabel(r[rowKey])}, ${colLabel(c)}: ${nOf(r[c], r[total], unit)}`;
       d.setAttribute('aria-label', says());
-      tip(d, () => ({ title: rowLabel(r[rowKey]), text: `${colLabel(c)}: ${nOf(r[c], r[total], unit)}` }));
+      const to = door && r[c] ? door(r, c) : null;
+      tip(d, () => ({ title: rowLabel(r[rowKey]), text: `${colLabel(c)}: ${nOf(r[c], r[total], unit)}` + (to ? '. Select to open in Explore.' : '') }));
+      if (to) { d.classList.add('pick'); d.setAttribute('role', 'link'); d.addEventListener('click', () => { location.hash = to; });
+        d.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); location.hash = to; } }); }
       cells.push([d, r, c]);
-      return h('td', {}, d);
-    }), h('td', { class: 'tot' }, fmt(r[total])));
-  });
+      return h('td', { class: starts.has(c) ? 'gstart' : null }, d);
+    }), h('td', { class: 'tot' }, fmt(r[total])))];
+  }).filter(Boolean);
   const table = h('table', { class: 'grid' },
-    h('thead', {}, h('tr', {}, h('th', {}, corner), colTh, h('th', { scope: 'col', style: { textAlign: 'right' } }, totalHead))), h('tbody', {}, body));
+    h('thead', {},
+      groups ? h('tr', { class: 'grouphead' }, h('th', {}), groups.map(g => h('th', { colspan: g.cols.length, scope: 'colgroup', class: 'gstart' }, g.label)), h('th', { colspan: cols.length - grouped.length + 1 })) : null,
+      h('tr', {}, h('th', {}, corner), colTh, h('th', { scope: 'col', style: { textAlign: 'right' } }, totalHead))), h('tbody', {}, body));
   function setMode(mode) {
     for (const [d, r, c] of cells) {
       const v = r[c], p = mode === 'share' ? shade(v, r[total]) : shade(v, totalRow(r) ? r[total] : max);
@@ -184,13 +203,13 @@ export function modeSwitch(options, current, onPick) {
 }
 
 // ---------------------------------------------------------------- age strip
-// Four small boxes, one per age band: usable (all four conditions), validated, used, or none.
+// Four small boxes, one per age band: usable (all four readiness criteria), validated, used, or none.
 export function ageState(i, band) {
   if ((i.usableAt || []).includes(band)) return 'usable';
   if ((i.validAges || []).includes(band)) return 'validated';
   return (i.ages || []).includes(band) ? 'used' : 'none';
 }
-const AGE_WORD = { usable: 'usable (meets all four conditions)', validated: 'validated', used: 'used', none: 'not used' };
+const AGE_WORD = { usable: 'usable (meets all four readiness criteria)', validated: 'validated', used: 'used', none: 'not used' };
 export function ageStrip(i, DB) {
   const parts = DB.labels.bands.map(b => [b, ageState(i, b)]);
   const says = parts.map(([b, s]) => `${b}: ${AGE_WORD[s]}`).join('; ');
@@ -199,19 +218,21 @@ export function ageStrip(i, DB) {
 }
 export const ageStripKey = () => h('p', { class: 'note' }, 'Age strip, one box per age band from under 8 to 15–17: ',
   h('span', { class: 'agestrip' }, h('i', { class: 'none' })), ' not used, ', h('span', { class: 'agestrip' }, h('i', { class: 'used' })), ' used, ',
-  h('span', { class: 'agestrip' }, h('i', { class: 'validated' })), ' validated, ', h('span', { class: 'agestrip' }, h('i', { class: 'usable' })), ' usable (meets all four conditions).');
+  h('span', { class: 'agestrip' }, h('i', { class: 'validated' })), ' validated, ', h('span', { class: 'agestrip' }, h('i', { class: 'usable' })), ' usable (meets all four readiness criteria).');
 
 // ---------------------------------------------------------------- objective header
 // o: a row of DB.objectives. The element id is the section address (obj1 ... obj7).
 export function objectiveHead(o) {
+  const to = o.door ? doorHref(o.door.tab, o.door.f, o.door.n) : null;
   return h('header', { class: 'obj-head', id: o.section },
     h('span', { class: 'obj-n' }, `Objective ${o.n}`),
     h('h2', {}, o.question),
+    h('p', { class: 'obj-answer' }, o.answer, to ? [' ', h('a', { href: to }, `Open the ${fmt(o.door.n)} ${o.door.tab} in Explore`)] : null),
     h('details', {}, h('summary', {}, 'Wording and domains'),
       h('p', {}, `Objective as stated in the review: to ${o.wording}. `, `Protocol extraction domains: ${o.domains}.`)));
 }
 // The line carried by the pages that serve the primary objective rather than one secondary objective.
-export const primaryNote = () => h('p', { class: 'primary-note' }, 'This page serves the primary objective of the review: to map and compare tools that measure social media exposure ',
+export const primaryNote = () => h('p', { class: 'primary-note' }, 'This page serves the primary objective of the review: to map and compare the instruments and methods used to measure social media exposure ',
   'in children and adolescents aged 0 to 17, with particular attention to instruments feasible for population-based surveys.');
 
 // ---------------------------------------------------------------- the dot field (Overview)
@@ -221,7 +242,7 @@ const SEEN = 'hub.stepsSeen';
 const seen = () => { try { return sessionStorage.getItem(SEEN) === '1'; } catch { return false; } };
 const markSeen = () => { try { sessionStorage.setItem(SEEN, '1'); } catch { /* storage unavailable: the steps play again next time */ } };
 
-export function dotField(DB, { onOpen, picker, table = null }) {
+export function dotField(DB, { onOpen, picker, table = null, door = null }) {
   const order = dotOrder(DB), n = stepCounts(DB), short = i => i.acronym || i.name;
   let step = startStep(calm(), seen()), pick = picker, timer = null;
 
@@ -240,7 +261,7 @@ export function dotField(DB, { onOpen, picker, table = null }) {
     return d;
   });
   const field = h('div', { class: 'idots', role: 'group', 'aria-label': 'Named instruments, one dot each' }, dots);
-  const say = h('p', { class: 'say', 'aria-live': 'polite' });
+  const say = h('p', { class: 'say', 'aria-live': 'polite' }), doorLine = h('p', { class: 'door-line' });
   roving(field, '.idot', colsOf);
 
   function draw() {
@@ -259,15 +280,17 @@ export function dotField(DB, { onOpen, picker, table = null }) {
       dots[k].setAttribute('aria-label', `${i.name}: ${stopReason(i, DB)}`);
     });
     const text = [
-      [h('b', {}, `${fmt(n[0])} named instruments`), ' were found. Each dot is one of them.'],
-      [h('b', {}, `${fmt(n[1])} of ${fmt(n[0])}`), ` have any measurement-property evidence. The other ${fmt(n[0] - n[1])} were not tested in the included sources.`],
-      [h('b', {}, `${fmt(n[2])} of ${fmt(n[0])}`), ' meet the validation rule.'],
-      [h('b', {}, `${fmt(n[3])} of the ${fmt(n[2])}`), ` validated instruments measure exposure. The other ${fmt(n[2] - n[3])} measure problematic use or other constructs.`],
-      [h('b', {}, `${fmt(n[4])} of the ${fmt(n[3])}`), ' are usable in at least one age band: they meet all four conditions. ',
+      ['The review found ', h('b', {}, `${fmt(n[0])} named instruments`), '. Each dot is one of them.'],
+      ['Measurement-property evidence exists for ', h('b', {}, `${fmt(n[1])} of ${fmt(n[0])}`), `. The other ${fmt(n[0] - n[1])} were not tested in the included sources.`],
+      ['The validation rule is met by ', h('b', {}, `${fmt(n[2])} of ${fmt(n[0])}`), '.'],
+      ['Exposure is measured by ', h('b', {}, `${fmt(n[3])} of the ${fmt(n[2])}`), ` validated instruments. The other ${fmt(n[2] - n[3])} measure problematic use or other constructs.`],
+      ['Usable in at least one age band: ', h('b', {}, `${fmt(n[4])} of the ${fmt(n[3])}`), ', which meet all four readiness criteria. ',
         `The larger dots (${fmt(picked)}) are usable for the choice in the picker.`,
         combined.length ? ` The ring marks ${combined.join(' and ')}, which ${combined.length === 1 ? 'qualifies' : 'qualify'} only with all ages combined.` : ''],
     ][step];
     say.replaceChildren(...text.flat().filter(x => x !== ''));
+    const to = door ? door(step) : null;
+    doorLine.replaceChildren(...(to ? [h('a', { href: to }, 'See these instruments in Explore')] : []));
   }
   function setStep(s) { step = Math.max(0, Math.min(4, s)); draw(); }
   function setPicker(p) { pick = p; draw(); }
@@ -280,13 +303,13 @@ export function dotField(DB, { onOpen, picker, table = null }) {
     timer = setTimeout(next, 900);
   }
   // the table behind the dots, one switch away
-  const body = h('div', {}, field, say);
+  const body = h('div', {}, field, say, doorLine);
   let tableNode = null, asTable = false;
   const sw = table ? h('button', { class: 'fig-switch', type: 'button', 'aria-pressed': 'false' }, 'Show as table') : null;
   if (sw) sw.addEventListener('click', () => {
     asTable = !asTable; stop();
     if (asTable && !tableNode) tableNode = table();
-    body.replaceChildren(...(asTable ? [tableNode] : [field, say]));
+    body.replaceChildren(...(asTable ? [tableNode] : [field, say, doorLine]));
     sw.textContent = asTable ? 'Show as figure' : 'Show as table'; sw.setAttribute('aria-pressed', String(asTable));
   });
   const node = h('section', { class: 'follow' }, sw ? h('div', { class: 'follow-acts' }, sw) : null, h('ol', { class: 'steps' }, stepBtns), body);

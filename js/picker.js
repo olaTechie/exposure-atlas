@@ -3,7 +3,7 @@ import { h, go, fill, store } from './ui.js';
 import { ALL, searchTarget } from './logic.js';
 
 export const USES_PICKER = new Set(['overview', 'themes', 'inventory', 'validated']);
-export const NO_PICKER = new Set(['downloads', 'about']);
+export const NO_PICKER = new Set(['downloads', 'about', 'explore']);
 const DOES = {
   overview: 'The picker sets the age band of the matrix and the health theme of the answer below.',
   themes: 'The picker sets the age band of the tailoring matrix and highlights the health theme.',

@@ -1,7 +1,9 @@
-import { h, put, fmt, pctf, pageHead, panelBox, relabel, href } from '../ui.js';
+import { h, put, fmt, pctf, pageHead, panelBox, relabel, href, doorHref } from '../ui.js';
 import { gridTable } from '../tables.js';
 import { renderMatrix, updateMatrix, legend, bandText } from '../matrix.js';
 import { ALL } from '../logic.js';
+
+const NO_THEME = 'Not linked to a health theme';
 import { figureBox, bars, shadeGrid, modeSwitch, objectiveHead, countTo, tip, nOf } from '../figures.js';
 
 export default function themes(el, params, DB) {
@@ -16,7 +18,7 @@ export default function themes(el, params, DB) {
   const nG = h('b', {}, '0'), nA = h('b', {}, '0'), nR = h('b', {}, '0');
   const bandName = h('b', {});
   const sentence = h('p', { class: 'mx-say', 'aria-live': 'polite' }, bandName, ': ', nG, ` of ${sum[band].Cells} combinations of health theme and analytical dimension have a validated instrument that can be used; `,
-    nA, ' have tools in use but none that meets all four conditions; ', nR, ' have no tool.');
+    nA, ' have instruments or methods in use but none that meets all four readiness criteria; ', nR, ' have no measure.');
   const bandBtns = order.map(b => {
     const r = sum[b];
     const btn = h('button', { class: 'band', type: 'button', onclick: () => { stop(); DB.setPicker({ band: b }); } },
@@ -55,8 +57,8 @@ export default function themes(el, params, DB) {
     h('header', {}, h('span', { class: 't' }, 'Tailoring matrix by age band'), h('span', { class: 'note' }, 'unit: combinations of health theme and analytical dimension')),
     h('div', { class: 'in' }, sentence, h('div', { class: 'bands' }, bandBtns), h('p', {}, play),
       matrixNode, legend(),
-      h('details', { class: 'more' }, h('summary', {}, 'The four conditions behind a green cell'),
-        h('p', {}, 'A cell is green when at least one validated exposure instrument linked to the health theme and covering the analytical dimension meets all four conditions:'),
+      h('details', { class: 'more' }, h('summary', {}, 'The four readiness criteria behind a green cell'),
+        h('p', {}, 'A cell is green when at least one validated exposure instrument linked to the health theme and covering the analytical dimension meets all four readiness criteria:'),
         h('ol', {},
           h('li', {}, 'it is validated with evidence from the age band;'),
           h('li', {}, 'it is usable in a survey (no app or device needed; 10 minutes or less, or completion time not reported);'),
@@ -65,13 +67,16 @@ export default function themes(el, params, DB) {
       h('details', { class: 'more' }, h('summary', {}, 'Cells by colour in each age band, with two sensitivity counts'), h('ul', {}, sens))));
   showBand();
 
+  // the pathway a row belongs to, from its health theme label; rows that are not one of the seven themes come last
+  const themeKey = Object.fromEntries(DB.labels.themes.map(t => [t.label, t.key]));
+  const pathwayOf = label => { const p = DB.labels.pathways.find(x => x.themes.includes(themeKey[label])); return p ? p.label : null; };
   // ---- measures and sources by health theme
   const [kTheme, kMeasures, , kSources] = Object.keys(U[0]);
   const uniTable = () => gridTable(U, Object.keys(U[0]).map((k, n) => ({ key: k, num: n > 0, fmt: v => (k.startsWith('%') ? pctf(v) : typeof v === 'number' ? fmt(v) : v) })));
   const uniSlot = h('div', {});
   const drawUni = unit => uniSlot.replaceChildren(unit === 'measures'
-    ? bars(U, { label: r => r[kTheme], n: r => r[kMeasures], N: () => nMeasures, unit: 'measures' })
-    : bars(U, { label: r => r[kTheme], n: r => r[kSources], N: () => nSources, unit: 'sources' }));
+    ? bars(U, { label: r => r[kTheme], n: r => r[kMeasures], N: () => nMeasures, unit: 'measures', group: r => pathwayOf(r[kTheme]) || NO_THEME, door: r => doorHref('measures', { theme: [r[kTheme]] }, r[kMeasures]) })
+    : bars(U, { label: r => r[kTheme], n: r => r[kSources], N: () => nSources, unit: 'sources', group: r => pathwayOf(r[kTheme]) || NO_THEME, door: r => doorHref('sources', { theme: [r[kTheme]] }, r[kSources]) }));
   drawUni('measures');
   const uni = figureBox({ title: 'Measures and sources by health theme', note: 'a measure or source can be linked to several health themes, so categories overlap',
     figure: uniSlot, table: uniTable, extra: [modeSwitch([['measures', 'Measures'], ['sources', 'Sources']], 'measures', drawUni)] });
@@ -79,7 +84,9 @@ export default function themes(el, params, DB) {
   // ---- health theme by main analytical dimension
   const xCols = Object.keys(X[0]), kTotal = xCols.at(-1);
   const gridCols = xCols.filter(k => k !== xCols[0] && k !== kTotal && !k.startsWith('Total'));
-  const grid = shadeGrid(X, { rowKey: xCols[0], cols: gridCols, total: kTotal, colLabel: relabel, totalRow: r => /^All/.test(r[xCols[0]]), unit: 'measures', totalHead: 'Measures' });
+  const grid = shadeGrid(X, { rowKey: xCols[0], cols: gridCols, total: kTotal, colLabel: relabel, totalRow: r => /^All/.test(r[xCols[0]]), unit: 'measures', totalHead: 'Measures',
+    rowGroup: r => (/^All/.test(r[xCols[0]]) ? null : pathwayOf(r[xCols[0]]) || NO_THEME),
+    door: (r, c) => doorHref('measures', /^All/.test(r[xCols[0]]) ? { main: [c] } : { theme: [r[xCols[0]]], main: [c] }, r[c]) });
   const crossTable = () => gridTable(X, xCols.map((k, n) => ({ key: k, label: relabel(k), num: n > 0, fmt: v => (typeof v === 'number' ? fmt(v) : v) })),
     { rowClass: r => (/^(Total|All)/.test(r[xCols[0]]) ? 'total' : null) });
   const cross = figureBox({ title: 'Health theme by main analytical dimension', note: 'unit: measures linked to the theme, one main analytical dimension each; a measure can be linked to several themes',
@@ -94,7 +101,7 @@ export default function themes(el, params, DB) {
     objectiveHead(DB.objectives.find(o => o.page === 'themes')),
     matrix,
     panelBox('Instruments behind the green cells', `${DB.green.length} instruments · unit: matrix cells filled`, green,
-      h('div', { class: 'in' }, h('p', { class: 'note' }, `${fmt(DB.funnel.usableInBand)} instruments fill the green cells of the four age bands; all ages combined counts ${fmt(DB.funnel.usableAllAges)}.`))),
+      h('div', { class: 'in' }, h('p', { class: 'note' }, `The green cells of the four age bands are filled by ${fmt(DB.funnel.usableInBand)} instruments; all ages combined counts ${fmt(DB.funnel.usableAllAges)}.`))),
     uni, cross);
 
   return {

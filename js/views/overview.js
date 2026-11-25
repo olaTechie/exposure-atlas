@@ -1,5 +1,5 @@
-import { h, put, fmt, tag, panelBox, instLink, acr, reporters, dimList, plural, lowerFirst, setCompare, go, href } from '../ui.js';
-import { usableIds, noneExplain, allAgesOnly, choiceText, agesText, ALL, funnelTable } from '../logic.js';
+import { h, put, fmt, tag, panelBox, instLink, acr, reporters, dimList, plural, lowerFirst, setCompare, go, href, doorHref } from '../ui.js';
+import { usableIds, noneExplain, allAgesOnly, choiceText, agesText, ALL, funnelTable, stepCounts } from '../logic.js';
 import { gridTable } from '../tables.js';
 import { renderMatrix, updateMatrix, openCellPanel, legend, bandText } from '../matrix.js';
 import { dotField, primaryNote } from '../figures.js';
@@ -16,8 +16,8 @@ function answerCard(DB, band, theme) {
   const emptyDims = DB.labels.dims.filter(d => !bands.some(b => themes.some(t => DB.matrix[b][t][d.key].ids.length)));
   const allOnly = allAgesOnly(DB).map(id => DB.byId[id]);
   const seeAll = theme
-    ? h('button', { class: 'btn', onclick: () => openCellPanel(DB, band, theme, null) }, 'See all tools in use')
-    : h('a', { class: 'btn', href: href('inventory') }, 'See all tools in use');
+    ? h('button', { class: 'btn', onclick: () => openCellPanel(DB, band, theme, null) }, 'See everything in use')
+    : h('a', { class: 'btn', href: href('inventory') }, 'See everything in use');
   let answer;
   if (ids.length) {
     answer = h('section', { class: 'ans' },
@@ -39,8 +39,8 @@ function answerCard(DB, band, theme) {
     const { elsewhere, reasons } = noneExplain(DB, band, theme);
     answer = h('section', { class: 'ans none' },
       h('h3', {}, `No instrument is usable ${choiceText(band, themeText, false)}`, h('span', { class: 'acts' }, seeAll)),
-      h('p', {}, 'No validated exposure instrument meets all four conditions for this choice.',
-        elsewhere.length ? ` ${plural(elsewhere.length, 'instrument is', 'instruments are')} usable ${band === ALL ? 'in at least one age band' : `at ${agesText(band)}`} for other health themes: ${elsewhere.map(id => short(DB.byId[id])).join(', ')}.` : '',
+      h('p', {}, 'No validated exposure instrument meets all four readiness criteria for this choice.',
+        elsewhere.length ? ` For other health themes, ${plural(elsewhere.length, 'instrument is', 'instruments are')} usable ${band === ALL ? 'in at least one age band' : `at ${agesText(band)}`}: ${elsewhere.map(id => short(DB.byId[id])).join(', ')}.` : '',
         reasons.length ? ' Validated exposure instruments that are usable in no age band:' : ''),
       reasons.length ? h('ul', {}, reasons.map(r => h('li', {}, instLink(DB.byId[r.id]), acr(DB.byId[r.id]), `: ${r.why}.`))) : null,
       h('p', {}, h('a', { href: href('gaps') }, 'See the gaps and the response each calls for →')));
@@ -62,7 +62,10 @@ export default function overview(el, params, DB) {
       gridTable([...T.usable, ...T.dropped], [{ key: 'name', label: 'Instrument', fmt: (v, r) => link(r) },
         { key: 'at', label: 'Usable in an age band', fmt: (v, r) => (r.at ? `Yes: ${r.at.join(', ')}` : `No: ${r.why}`) }]));
   };
-  const field = dotField(DB, { picker: { band, theme }, onOpen: id => go('instrument', { id }), table: stepsTable });
+  const n = stepCounts(DB), named = 'Named instrument', exposure = (DB.instruments.find(i => i.usableAt != null) || {}).construct;
+  const stepLabels = [{ kind: [named] }, { kind: [named], evidence: ['At least one result'] }, { kind: [named], validated: ['Yes'] },
+    { kind: [named], validated: ['Yes'], construct: [exposure] }, { kind: [named], usable: DB.labels.bands }];
+  const field = dotField(DB, { picker: { band, theme }, onOpen: id => go('instrument', { id }), table: stepsTable, door: s => doorHref('instruments', stepLabels[s], n[s]) });
   field.node.append(h('p', { class: 'note' }, 'Usable in an age band: validated with evidence from the band, usable in a survey, ',
     'available with the reporter for the band, and meeting the minimum-evidence condition. ', h('a', { href: href('about') }, 'Definitions')));
 
@@ -78,7 +81,7 @@ export default function overview(el, params, DB) {
   const matrixNode = renderMatrix(DB, band, { selTheme: theme });
   const mTitle = h('span', {}), mNote = h('span', {});
   const matrix = panelBox(mTitle, mNote, h('div', { class: 'in' }, matrixNode, legend(),
-    h('p', { class: 'note' }, h('a', { href: href('themes') }, 'The matrix in every age band, with the four conditions'))));
+    h('p', { class: 'note' }, h('a', { href: href('themes') }, 'The matrix in every age band, with the four readiness criteria'))));
   const labelMatrix = () => {
     const r = DB.matrixSummary.find(x => x['Age band'] === band);
     mTitle.textContent = `Tailoring matrix · ${bandText(band)}`;
@@ -88,8 +91,8 @@ export default function overview(el, params, DB) {
 
   put(el,
     h('div', { class: 'ttl' }, h('h1', {}, 'Which instruments could go into a survey of children and adolescents?')),
-    h('p', { class: 'lede' }, `The review found ${fmt(F.Measures)} measures in ${fmt(nSources)} sources. ${fmt(F['Named instruments'])} of the tools behind them are named instruments. `,
-      'Step through what happens to them.'),
+    h('p', { class: 'lede' }, `The review found ${fmt(F.Measures)} measures in ${fmt(nSources)} sources. They rest on ${fmt(F['Named instruments'])} named instruments, `,
+      `${fmt(DB.instruments.filter(i => i.level === 'system').length)} named tracking systems and study-specific items. Step through what happens to the named instruments.`),
     primaryNote(),
     field.node, answerSlot, questions, matrix);
 

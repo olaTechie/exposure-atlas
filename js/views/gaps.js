@@ -1,4 +1,4 @@
-import { h, put, fill, fmt, pageHead, panelBox, href, tag } from '../ui.js';
+import { h, put, fill, fmt, pageHead, panelBox, href, tag, doorHref } from '../ui.js';
 import { charBlock } from '../tables.js';
 import { objectiveHead } from '../figures.js';
 
@@ -14,7 +14,7 @@ export default function gaps(el, params, DB) {
   drawCountries(false);
 
   put(el,
-    pageHead('Gaps', 'Gaps in the measurement landscape and the response each calls for. Where no tool exists, new items are needed. Far more often tools exist but are untested, and the priority is to validate, compare and harmonise them.'),
+    pageHead('Gaps', 'Gaps in the measurement landscape and the response each calls for. Where no measure exists, new instruments are needed. Far more often instruments exist but are untested, and the priority is to validate, compare and harmonise them.'),
     objectiveHead(DB.objectives.find(o => o.page === 'gaps')),
     panelBox('Gaps and the response each calls for', 'units as labelled in each row',
       h('div', { class: 'scroll' }, h('table', { class: 'data' },
@@ -22,7 +22,8 @@ export default function gaps(el, params, DB) {
         h('tbody', {}, G.rows.map(r => h('tr', {},
           h('td', {}, h('b', {}, r.gap)),
           h('td', {}, r.missing),
-          h('td', {}, r.evidence, '. ', h('a', { href: href(r.link, r.params), class: 'small', title: PAGE[r.link] }, `See it in ${PAGE[r.link]}`)),
+          h('td', {}, r.evidence, '. ', h('a', { href: href(r.link, r.params), class: 'small', title: PAGE[r.link] }, `See it in ${PAGE[r.link]}`),
+            r.door && doorHref(r.door.tab, r.door.f, r.door.n) ? [' ', h('a', { href: doorHref(r.door.tab, r.door.f, r.door.n), class: 'small' }, `Open the ${fmt(r.door.n)} ${r.door.tab} in Explore`)] : null),
           h('td', {}, tag('green', r.response)))))))),
     h('div', { class: 'cols2' },
       charBlock(DB.tables.sources, 'Age band covered', { title: 'Sources by age band covered', unit: 'sources' }),

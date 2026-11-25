@@ -1,5 +1,5 @@
 import { h, put, fmt, tabs, instTags, instLink, acr, csvButton, compareIds, toggleCompare, go, pageHead, panelBox, isValidated, DASH, dimText, themeText, reporters, usableText } from '../ui.js';
-import { inventoryMatch, ALL } from '../logic.js';
+import { inventoryMatch, ALL, kindOf } from '../logic.js';
 import { gridTable } from '../tables.js';
 import { figureBox, bars, ageStrip, ageStripKey, objectiveHead, primaryNote } from '../figures.js';
 
@@ -21,7 +21,8 @@ const show = v => (v == null || v === '' ? DASH : v);
 export default function inventory(el, params, DB) {
   const { band, theme } = DB.picker();
   const named = DB.instruments.filter(i => i.level === 'named');
-  const nGeneric = DB.instruments.length - named.length;
+  const nSystems = DB.instruments.filter(i => i.level === 'system').length;
+  const nGeneric = DB.instruments.length - named.length - nSystems;
   const F = { q: params.q || '', generic: params.all === '1', construct: params.construct || '' };
   const constructs = [...new Set(DB.instruments.map(i => i.construct))].sort((a, b) => a.localeCompare(b));
   if (F.construct && !constructs.includes(F.construct)) F.construct = '';
@@ -40,13 +41,13 @@ export default function inventory(el, params, DB) {
     const cmp = compareIds();
     const narrowed = band !== ALL || theme;
     status.replaceChildren(
-      h('span', {}, `Showing ${fmt(rows.length)} of ${fmt(pool)} ${F.generic ? 'named instruments and study-specific item types' : 'named instruments'}.`,
+      h('span', {}, `Showing ${fmt(rows.length)} of ${fmt(pool)} ${F.generic ? 'named instruments, named tracking systems and types of study-specific items' : 'named instruments'}.`,
         narrowed ? ` The picker keeps those used at ${band === ALL ? 'any age' : `ages ${band.toLowerCase()}`}${theme ? ` and linked to ${DB.themeLabel(theme).toLowerCase()}` : ''}.` : ''),
       h('span', { class: 'spacer' }),
       h('button', { class: 'btn', disabled: cmp.length < 2, onclick: () => go('compare') }, `Compare selected (${cmp.length})`),
       csvButton('Download CSV', 'SMEPH261_inventory_shown.csv', () => [
         ['Instrument', 'Acronym', 'Type', ...COLS.map(c => c[0]), 'Usable at (validated exposure instruments)', 'Ages used', 'Ages validated', 'Reporters', 'Analytical dimensions', 'Health themes'],
-        ...rows.map(i => [i.name, i.acronym, i.level === 'named' ? 'Named instrument' : 'Study-specific items', ...COLS.map(c => c[1](i) ?? ''),
+        ...rows.map(i => [i.name, i.acronym, kindOf(i), ...COLS.map(c => c[1](i) ?? ''),
           usableText(i) ?? '', i.ages.join('; '), i.validAges.join('; '), reporters(i), dimText(i), themeText(i)])]));
     tbody.replaceChildren(...(rows.length ? rows.map(i => h('tr', {},
       h('td', {}, h('input', { type: 'checkbox', checked: cmp.includes(i.id), title: 'Add to compare', 'aria-label': `Compare ${i.name}`,
@@ -71,7 +72,7 @@ export default function inventory(el, params, DB) {
   moreBtn.addEventListener('click', () => { showAll = !showAll; drawRank(); });
   drawRank();
   const mostUsed = figureBox({ title: 'The most used named instruments', note: `unit: sources using the instrument, of ${fmt(nSources)} sources · a source can use several instruments`,
-    figure: h('div', {}, rankSlot, h('p', { class: 'note' }, `${fmt(DB.funnel['Named instruments used in one source'])} of the ${fmt(named.length)} named instruments are used in a single source. `,
+    figure: h('div', {}, rankSlot, h('p', { class: 'note' }, `Of the ${fmt(named.length)} named instruments, ${fmt(DB.funnel['Named instruments used in one source'])} are used in a single source. `,
       'Bar lengths compare the instruments with each other. This figure shows every named instrument, whatever the picker is set to. Select a bar to open the instrument.')),
     table: () => gridTable(ranked, [{ key: 'name', label: 'Instrument', fmt: (v, i) => instLink(i) }, { key: 'acronym', label: 'Acronym' },
       { key: 'n', label: 'Sources using it', num: true, fmt: (v, i) => fmt(i.master[kUse]) }, { key: 'v', label: 'Meets the validation rule', fmt: (v, i) => (isValidated(i) ? 'Yes' : 'No') }]),
@@ -79,7 +80,7 @@ export default function inventory(el, params, DB) {
 
   put(el,
     pageHead('Instrument inventory',
-      `${fmt(named.length)} named instruments, and ${fmt(nGeneric)} types of study-specific items, from ${fmt(Object.keys(DB.sources).length)} sources. Unit: instruments.`),
+      `The inventory holds ${fmt(named.length)} named instruments, ${fmt(nSystems)} named tracking systems and ${fmt(nGeneric)} types of study-specific items, from ${fmt(Object.keys(DB.sources).length)} sources.`),
     primaryNote(),
     objectiveHead(DB.objectives.find(o => o.n === 3)), mostUsed,
     h('h2', { class: 'list-head' }, 'All instruments'),
@@ -88,7 +89,7 @@ export default function inventory(el, params, DB) {
         oninput: e => { F.q = e.target.value; drawRows(); } }),
       pillBar,
       h('label', { class: 'small' }, h('input', { type: 'checkbox', checked: F.generic, onchange: e => { F.generic = e.target.checked; draw(); } }),
-        ` Include the ${fmt(nGeneric)} types of study-specific items`)),
+        ` Include the ${fmt(nSystems)} named tracking systems and ${fmt(nGeneric)} types of study-specific items`)),
     status,
     panelBox('Instruments', 'one row per instrument',
       h('div', { class: 'scroll' }, h('table', { class: 'data' },
@@ -96,7 +97,7 @@ export default function inventory(el, params, DB) {
         tbody)),
       h('div', { class: 'in' }, ageStripKey(), h('p', { class: 'note' },
         '"Usable in a survey" is the feasibility condition only: no app or device is needed, and completion takes 10 minutes or less or the time was not reported. ',
-        `${fmt(byDefault)} of the ${fmt(DB.instruments.filter(isValidated).length)} validated instruments meet it only because no completion time was reported. `,
-        'It is not the same as "usable at" an age band, which needs all four conditions.'))));
+        `Of the ${fmt(DB.instruments.filter(isValidated).length)} validated instruments, ${fmt(byDefault)} meet it only because no completion time was reported. `,
+        'It is not the same as "usable at" an age band, which needs all four readiness criteria.'))));
   draw();
 }

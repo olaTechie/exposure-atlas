@@ -1,5 +1,5 @@
 // Small DOM and formatting helpers shared by all views.
-import { validCompareIds, pctf } from './logic.js';
+import { validCompareIds, pctf, formatExplore, door } from './logic.js';
 export { pctf };
 
 let DB = null;                       // set once by app.js, so helpers can read labels and known ids
@@ -29,6 +29,10 @@ export const store = {
 const query = params => new URLSearchParams(Object.entries(params).filter(([, v]) => v != null && v !== '')).toString();
 export const href = (view, params = {}) => { const q = query(params); return '#/' + view + (q ? '?' + q : ''); };
 export function go(view, params = {}) { location.hash = href(view, params); }
+// the address of Explore in a given state: {tab, f, mf} (see logic.js)
+export const exploreHref = state => href('explore', formatExplore(state, DB));
+// the address Explore opens at for a number shown on a page, or null when Explore would not give that number
+export const doorHref = (tab, labels, shown) => { const d = door(DB, tab, labels, shown); return d ? exploreHref(d) : null; };
 
 // append / replace children, skipping null and flattening arrays
 const clean = kids => kids.flat(Infinity).filter(k => k != null && k !== false);
@@ -69,11 +73,12 @@ export const themeText = i => i.themes.map(t => DB.themeLabel(t)).join(', ') || 
 // "usable at" for the validated exposure instruments; null for every other instrument
 export const usableText = i => (i.usableAt == null ? null : i.usableAt.length ? i.usableAt.join(', ') : `none: ${i.whyNot}`);
 export const usableTag = i => (i.usableAt == null ? null : i.usableAt.length
-  ? tag('green', `usable at ${i.usableAt.join(', ')}`, 'Meets all four conditions in these age bands')
+  ? tag('green', `usable at ${i.usableAt.join(', ')}`, 'Meets all four readiness criteria in these age bands')
   : h('span', { class: 'tag t-red wrap' }, `none: ${i.whyNot}`));
 
 // allAges: the list is for all ages combined, where an instrument can count although it is usable in no age band
 export function instTags(i, { allAges = false } = {}) {
+  if (i.level === 'system') return [tag('blue', 'named tracking system', 'A digital-trace system identified by name; reported with the digital-trace measures and not judged against the validation rule')];
   if (i.level !== 'named') return [tag('blue', 'study-specific items', 'Questions written for one study; never validated')];
   const m = i.master, out = [];
   if (isValidated(i)) {

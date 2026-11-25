@@ -1,6 +1,7 @@
-import { h, put, fmt, pctf, tabs, pageHead, panelBox, plural, relabel } from '../ui.js';
+import { h, put, fmt, pctf, tabs, pageHead, panelBox, plural, relabel, doorHref } from '../ui.js';
 import { charTable, gridTable } from '../tables.js';
 import { figureBox, bars, stacks, shadeGrid, modeSwitch, objectiveHead } from '../figures.js';
+import { approachGroups } from '../logic.js';
 
 const APPROACH = { EMA: 'Ecological momentary assessment' };
 const SEG = ['s-1', 's-2', 's-3', 's-other'];
@@ -17,11 +18,11 @@ export default function measured(el, params, DB) {
   const dimFig = h('div', {}), dimTable = h('div', {}), dimNote = h('p', { class: 'note' });
   const drawDims = mode => {
     const rs = mode === 'main' ? main : cover;
-    dimFig.replaceChildren(bars(rs, { label: r => r.Category, n: r => r.n, N: r => r.N, unit: 'measures',
+    dimFig.replaceChildren(bars(rs, { label: r => r.Category, n: r => r.n, N: r => r.N, unit: 'measures', door: r => doorHref('measures', { [mode === 'main' ? 'main' : 'covers']: [r.Category] }, r.n),
       rule: mode === 'main' ? { before: nDims, text: 'Not analytical dimensions' } : null }));
     dimTable.replaceChildren(charTable(rs));
     dimNote.textContent = mode === 'main'
-      ? `Each measure sits in one category, so the categories do not overlap and sum to ${fmt(nMeasures)}. ${nDims} of the ${nCats} categories are the analytical dimensions. The other ${nCats - nDims} are not dimensions: `
+      ? `Each measure sits in one category, so the categories do not overlap and sum to ${fmt(nMeasures)}. Of the ${nCats} categories, ${nDims} are the analytical dimensions; the other ${nCats - nDims} are not dimensions: `
         + 'measures with more than one main dimension; problematic-use symptom scales, which measure a construct and not a dimension of exposure; other constructs; and exposure measures whose items the source does not describe.'
       : `Categories overlap: one measure can cover several analytical dimensions, as its main focus or a secondary one. Counted this way the ${fmt(nMeasures)} measures make ${fmt(X.pairs)} pairs of measure and analytical dimension.`;
   };
@@ -31,9 +32,12 @@ export default function measured(el, params, DB) {
 
   // ---- objective 2: dimension by approach, approach by reporter, agreement
   const approachCols = Object.keys(X.dimApproach[0]).filter(k => k !== 'Main dimension' && k !== 'Total');
+  const G = approachGroups(DB);
   const isAll = r => /^All/.test(r['Main dimension']);
   const grid = shadeGrid(X.dimApproach.filter(r => !/^Total/.test(r['Main dimension'])), { rowKey: 'Main dimension', cols: approachCols, total: 'Total',
-    rowLabel: relabel, colLabel: c => APPROACH[c] || c, totalRow: isAll, unit: 'measures', totalHead: 'Measures' });
+    rowLabel: relabel, colLabel: c => APPROACH[c] || c, totalRow: isAll, unit: 'measures', totalHead: 'Measures',
+    groups: G.map(g => ({ label: `${g.label} approaches`, cols: g.approaches.filter(a => approachCols.includes(a)) })),
+    door: (r, c) => doorHref('measures', isAll(r) ? { approach: [c] } : { main: [r['Main dimension']], approach: [c] }, r[c]) });
   const cell = (v, r) => [fmt(v), h('span', { class: 'sub' }, r.Total ? pctf(v / r.Total) : '')];
   const dimApproachTable = () => gridTable(X.dimApproach, [
     { key: 'Main dimension', label: 'Main analytical dimension', fmt: v => relabel(v) },
@@ -41,7 +45,7 @@ export default function measured(el, params, DB) {
     { key: 'Total', num: true, fmt: v => fmt(v) }],
   { rowClass: r => (/^(Total|All)/.test(r['Main dimension']) ? 'total' : null) });
   const dimApproach = figureBox({ title: 'Main analytical dimension by measurement approach', note: `N = ${fmt(nMeasures)} measures · categories do not overlap`,
-    figure: h('div', {}, grid.node, h('p', { class: 'note' }, 'Each row is the measures with that main analytical dimension; each cell is the part of the row using the approach. Point at a cell, or move to it with the arrow keys, to read it.')),
+    figure: h('div', {}, grid.node, h('p', { class: 'note' }, 'Each row is the measures with that main analytical dimension; each cell is the part of the row using the approach. Question-based approaches ask a person; digital-trace approaches record use. Point at a cell, or move to it with the arrow keys, to read it.')),
     table: dimApproachTable, extra: [modeSwitch([['share', 'Share of each row'], ['count', 'Number of measures']], 'share', grid.setMode)] });
 
   const repCols = Object.keys(X.approachReporter[0]).filter(k => k !== 'Approach' && !k.startsWith('Measures'));
@@ -49,15 +53,18 @@ export default function measured(el, params, DB) {
   const reporterTable = () => gridTable(X.approachReporter, [{ key: 'Approach', label: 'Measurement approach', fmt: v => APPROACH[v] || v },
     ...[kN, ...repCols].map(k => ({ key: k, num: true, fmt: v => fmt(v) }))], { rowClass: r => (/^(Total|All)/.test(r.Approach) ? 'total' : null) });
   const approachReporter = figureBox({ title: 'Measurement approach and who reports', note: 'unit: measures · one main reporter per measure, so categories do not overlap',
-    figure: h('div', {}, stacks(X.approachReporter, { label: r => APPROACH[r.Approach] || r.Approach, keys: repCols.map((k, n) => ({ key: k, label: k, cls: SEG[n] || 's-other' })),
-      total: r => r[kN], unit: 'measures', value: r => plural(r[kN], 'measure', 'measures') }),
-    h('p', { class: 'note' }, 'Each bar is the measures using one approach, divided by main reporter. The bars are the same length whatever the number of measures, which is given at the right.')),
+    figure: h('div', {},
+      [...G.map(g => [`${g.label} approaches`, X.approachReporter.filter(r => g.approaches.includes(r.Approach))]),
+        ['All approaches', X.approachReporter.filter(r => !G.some(g => g.approaches.includes(r.Approach)))]].map(([title, rs], k) => [
+        h('h3', { class: 'grp-h' }, title),
+        stacks(rs, { label: r => APPROACH[r.Approach] || r.Approach, keys: repCols.map((key, n) => ({ key, label: key, cls: SEG[n] || 's-other' })),
+          total: r => r[kN], unit: 'measures', value: r => plural(r[kN], 'measure', 'measures'), legend: k === 0 })]),
+      h('p', { class: 'note' }, 'Each bar is the measures using one approach, divided by main reporter. The bars are the same length whatever the number of measures, which is given at the right.')),
     table: reporterTable });
 
   // agreement: the comparisons as a table that the comparator pills filter
   const comps = X.comparisons;
   const types = [...new Set(comps.map(c => c['Compared with']))].sort((a, b) => comps.filter(c => c['Compared with'] === b).length - comps.filter(c => c['Compared with'] === a).length);
-  const nSources = new Set(comps.map(c => c.Study_ID)).size;
   let type = '';
   const pillBar = h('span', {}), compBody = h('div', {});
   const drawComps = () => {
@@ -67,10 +74,12 @@ export default function measured(el, params, DB) {
       { key: 'Source' }, { key: 'Measure' }, { key: 'Compared with' }, { key: 'Statistic type', label: 'Statistic' }, { key: 'Result' }, { key: 'Direction' }]));
   };
   drawComps();
-  const agreement = panelBox('Agreement between ways of measuring', `${plural(comps.length, 'comparison', 'comparisons')} in ${plural(nSources, 'source', 'sources')}`,
+  const CS = X.comparisonSummary;
+  const agreement = panelBox('Agreement between ways of measuring', `${plural(CS.Comparisons, 'comparison', 'comparisons')} in ${plural(CS.Sources, 'source', 'sources')}`,
     h('div', { class: 'in' }, h('div', { class: 'filters', style: { margin: 0 } }, h('span', { class: 'small muted' }, 'Compared with'), pillBar)),
     compBody,
-    h('div', { class: 'in' }, h('p', { class: 'note' }, 'Unit: comparisons reported by the sources, one row each, in the statistic the source used. The results are listed and not pooled.')));
+    h('div', { class: 'in' }, h('p', { class: 'note' }, 'Unit: comparisons reported by the sources, each counted once, in the statistic the source used. The results are listed and not pooled. ',
+      `Logged use was the comparator in ${fmt(CS['Comparisons: Logged use'])} comparisons from ${plural(CS['Sources: Logged use'], 'source', 'sources')}.`)));
   agreement.id = 'agreement';
 
   // ---- objective 5: content exposure
@@ -83,7 +92,7 @@ export default function measured(el, params, DB) {
   const content = figureBox({ title: 'Content exposure by type of content', note: `N = ${fmt(allC[kM])} measures covering content · a measure can cover several content types, so categories overlap`,
     figure: h('div', {}, bars(types5, { label: r => r[kType], n: r => r[kM], N: () => allC[kM], unit: 'measures covering content',
       sub: r => `${pctf(r[kU])} usable in a survey${r[kV] && r[kV] !== 'none' ? `; validated exposure instruments: ${r[kV]}` : ''}` }),
-    h('p', { class: 'note' }, `${fmt(allC[kM])} measures in ${fmt(allC[kS])} sources cover content; ${pctf(allC[kU])} of them are usable in a survey (no app or device needed; 10 minutes or less, or completion time not reported). `,
+    h('p', { class: 'note' }, `Content is covered by ${fmt(allC[kM])} measures in ${fmt(allC[kS])} sources; ${pctf(allC[kU])} of them are usable in a survey (no app or device needed; 10 minutes or less, or completion time not reported). `,
       allC[kV] && allC[kV] !== 'none' ? `Validated exposure instruments that cover content: ${allC[kV]}.` : 'No validated exposure instrument covers content.')),
     table: contentTable });
 

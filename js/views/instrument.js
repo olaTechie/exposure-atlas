@@ -22,14 +22,15 @@ export default function instrument(el, params, DB) {
   const cmpBtn = h('button', { class: 'btn ghost', onclick: () => { toggleCompare(i.id); cmpBtn.textContent = label(); } }, label());
   const kv = pairs => h('div', { class: 'kv' }, pairs.filter(Boolean).map(([k, v]) => [h('b', {}, k), h('span', {}, v == null || v === '' ? DASH : v)]));
   const usable = i.usableAt == null ? null
-    : i.usableAt.length ? `Usable at ages ${i.usableAt.join(' and ')}: it meets all four conditions there.`
+    : i.usableAt.length ? `Usable at ages ${i.usableAt.join(' and ')}: it meets all four readiness criteria there.`
       : `Not usable in any age band: ${i.whyNot}.`;
 
   put(el,
     h('p', { class: 'small' }, h('a', { href: href('inventory') }, '← Instrument inventory')),
     h('div', { class: 'row' }, h('h1', {}, i.name, acr(i) ? h('span', { class: 'muted', style: { fontWeight: 400 } }, acr(i)) : null), h('span', { class: 'spacer' }), cmpBtn),
     h('div', { style: { margin: '4px 0 12px' } }, instTags(i)),
-    i.level !== 'named' ? h('div', { class: 'banner' }, 'A type of study-specific items: questions written for individual studies, grouped by what they ask. Study-specific items are never validated.') : null,
+    i.level === 'system' ? h('div', { class: 'banner' }, 'A named tracking system: a digital-trace system identified by name. Tracking systems are reported with the digital-trace measures and are not judged against the validation rule.') : null,
+    i.level === 'generic' ? h('div', { class: 'banner' }, 'A type of study-specific items: questions written for individual studies, grouped by what they ask. Study-specific items are never validated.') : null,
     i.level === 'named' && notExposureText(i.construct) ? h('div', { class: 'banner' }, notExposureText(i.construct)) : null,
     usable ? h('div', { class: 'banner', style: i.usableAt.length ? { background: 'var(--t-green-bg)', color: 'var(--t-green)' } : { background: 'var(--t-red-bg)', color: 'var(--t-red)' } }, usable) : null,
 
@@ -41,7 +42,7 @@ export default function instrument(el, params, DB) {
         ['Ages used', [join(i.ages), ' ', ageStrip(i, DB)]],
         isValidated(i) ? ['Ages validated', i.validAges.length ? i.validAges.join(', ') : 'age band not reported'] : null,
         ['Reporter', reporters(i)],
-        ['Measurement approach', join(i.approaches)],
+        ['Measurement approach', join(i.approaches.map(a => DB.labels.approachLabel[a] || a))],
         ['Items and completion time', itemsTime(i)],
         [`Countries (${i.countries.length})`, countries],
       ])),

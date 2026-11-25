@@ -1,10 +1,11 @@
 import { h, compareIds, toggleCompare, instLink, instLabel, csvButton, MAX_COMPARE, href, join, fill, pageHead, panelBox, isValidated, DASH, dimText, themeText, reporters, usableText } from '../ui.js';
 import { primaryNote } from '../figures.js';
+import { kindOf } from '../logic.js';
 
 export default function compare(el, params, DB) {
   const m = (i, k) => (i.master ? i.master[k] : DASH);
   const ROWS = [
-    ['Status', i => (i.level !== 'named' ? 'Study-specific items' : isValidated(i) ? 'Validated' : 'Not validated')],
+    ['Status', i => (i.level !== 'named' ? kindOf(i) : isValidated(i) ? 'Validated' : 'Not validated')],
     ['Construct', i => i.construct],
     ['COSMIN overall quality', i => m(i, 'COSMIN overall quality')],
     ['Validating sources', i => String(m(i, 'Validating sources'))],

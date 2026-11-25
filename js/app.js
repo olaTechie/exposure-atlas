@@ -3,6 +3,7 @@ import { normalisePicker, safeRender, onlyPickerChanged, scrollPlan } from './lo
 import { hideTip } from './figures.js';
 import { renderPicker } from './picker.js';
 import overview from './views/overview.js';
+import explore from './views/explore.js';
 import inventory from './views/inventory.js';
 import instrument from './views/instrument.js';
 import compare from './views/compare.js';
@@ -14,7 +15,7 @@ import sources from './views/sources.js';
 import downloads from './views/downloads.js';
 import about from './views/about.js';
 
-const VIEWS = { overview, inventory, instrument, compare, validated, measured, themes, gaps, sources, downloads, about };
+const VIEWS = { overview, explore, inventory, instrument, compare, validated, measured, themes, gaps, sources, downloads, about };
 const view = document.getElementById('view');
 
 let DB;

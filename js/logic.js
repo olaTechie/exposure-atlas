@@ -28,11 +28,11 @@ export function usableIds(DB, band, theme) {
   return [...ids].sort(byName(DB));
 }
 
-// Tools in one matrix cell, or in the whole row when dim is null. "All ages" reads the all-ages-combined matrix.
+// What is in use in one matrix cell, or in the whole row when dim is null. "All ages" reads the all-ages-combined matrix.
 export function cellTools(DB, band, theme, dim) {
   const cells = (dim ? [dim] : dimKeys(DB)).map(k => DB.matrix[band][theme][k]);
   const usable = [...new Set(cells.flatMap(c => c.ids))].sort(byName(DB));
-  const others = [...new Set(cells.flatMap(c => c.tools))].filter(id => !usable.includes(id)).sort(byName(DB));
+  const others = [...new Set(cells.flatMap(c => c.inUse))].filter(id => !usable.includes(id)).sort(byName(DB));
   return { usable, others };
 }
 
@@ -76,7 +76,7 @@ export function allAgesOnly(DB) {
   return [...all].filter(id => !inBands.has(id)).sort(byName(DB));
 }
 // heading of the first list in the drill-down panel
-export const usableHeading = (band, n) => (band === ALL ? `Meet the conditions with all ages combined (${n})` : `Usable instruments (${n})`);
+export const usableHeading = (band, n) => (band === ALL ? `Meet the readiness criteria with all ages combined (${n})` : `Usable instruments (${n})`);
 
 // When nothing is usable for the choice: either instruments are usable at this age for other health themes,
 // or none is usable at this age at all and the reasons are given.
@@ -148,8 +148,8 @@ export function stopReason(i, DB) {
   if (r === 1) return 'Tested, but it does not meet the validation rule.';
   if (r === 2) return `Validated, but it measures ${i.construct === 'Other' ? 'another construct' : i.construct.toLowerCase()}, not exposure.`;
   if (r === 3) return `Validated exposure instrument, usable in no age band: ${i.whyNot}.`
-    + (allAgesOnly(DB).includes(i.id) ? ' It meets the conditions only with all ages combined.' : '');
-  return `Usable at ${i.usableAt.join(' and ')}: it meets all four conditions.`;
+    + (allAgesOnly(DB).includes(i.id) ? ' It meets the readiness criteria only with all ages combined.' : '');
+  return `Usable at ${i.usableAt.join(' and ')}: it meets all four readiness criteria.`;
 }
 // The Overview opens on its last step when movement is unwanted or the reader has already seen the steps play.
 export const startStep = (calm, seen) => (calm || seen ? 4 : 0);
@@ -205,3 +205,129 @@ export function funnelTable(DB) {
 
 // On a touch screen there is no hover: the first tap on a mark shows its text, the second does what the mark does.
 export const tapAction = ({ coarse, shown }) => (coarse && !shown ? 'show' : 'open');
+
+// ---------------------------------------------------------------- kinds, groups of approach, pathways
+// What an entry of the inventory is. Named tracking systems are digital-trace systems identified by name; they are
+// reported with the digital-trace measures and are not judged against the validation rule.
+const KIND = { named: 'Named instrument', system: 'Named tracking system' };
+export const kindOf = i => KIND[i.level] || 'Type of study-specific items';
+// The two groups of measurement approach, each with its approaches as the master tables label them.
+export const approachGroups = DB => DB.labels.approachGroups;
+// Rows put under their pathway, in the master's order. themeOf(row) gives the row's health theme key.
+export function byPathway(DB, rows, themeOf) {
+  return DB.labels.pathways.map(p => ({ pathway: p, rows: p.themes.flatMap(t => rows.filter(r => themeOf(r) === t)) })).filter(g => g.rows.length);
+}
+
+// ---------------------------------------------------------------- Explore
+// Rows are counted by the categories the master tables put on them. Nothing is classified here: a row carries, for
+// each filter, the positions of its categories in that filter's list (measures in row.c, instruments and sources in row.x).
+export const EXPLORE_TABS = ['measures', 'instruments', 'sources'];
+const sourceRows = new WeakMap();
+export function exploreRows(DB, tab) {
+  if (tab === 'measures') return DB.measures;
+  if (tab === 'instruments') return DB.instruments;
+  if (!sourceRows.has(DB)) sourceRows.set(DB, Object.entries(DB.sources).map(([id, s]) => ({ id, ...s })));
+  return sourceRows.get(DB);
+}
+export const rowHas = (row, tab, key) => ((tab === 'measures' ? row.c : row.x) || {})[key] || [];
+const chosen = f => Object.entries(f || {}).filter(([, v]) => Array.isArray(v) && v.length);
+// Within a filter any chosen category is enough; across filters every one must hold. skipKey leaves one filter out.
+export function passes(DB, tab, row, f, skipKey) {
+  return chosen(f).every(([key, picked]) => key === skipKey || rowHas(row, tab, key).some(c => picked.includes(c)));
+}
+// The sources, or the instruments, that have at least one measure passing the measure filters.
+export function linkedIds(DB, tab, mf) {
+  const ids = new Set();
+  for (const r of DB.measures) if (passes(DB, 'measures', r, mf, null)) ids.add(tab === 'sources' ? r.s : r.i);
+  return ids;
+}
+// The rows a tab starts from: all of them, or only those linked to measures matching mf.
+function pool(DB, tab, mf) {
+  const rows = exploreRows(DB, tab);
+  if (tab === 'measures' || !chosen(mf).length) return rows;
+  const ids = linkedIds(DB, tab, mf);
+  return rows.filter(r => ids.has(r.id));
+}
+export const exploreMatches = (DB, tab, f, mf) => pool(DB, tab, mf).filter(r => passes(DB, tab, r, f, null));
+export const exploreCount = (DB, tab, f, mf) => exploreMatches(DB, tab, f, mf).length;
+// For one filter, how many rows each of its categories would leave: the other filters applied, its own choice ignored.
+export function facetCounts(DB, tab, f, key, mf) {
+  const filter = DB.explore[tab].find(x => x.key === key);
+  const n = filter.cats.map(() => 0);
+  for (const r of pool(DB, tab, mf)) if (passes(DB, tab, r, f, key)) for (const c of rowHas(r, tab, key)) n[c] += 1;
+  return n;
+}
+
+// The address: f=<key>:<label>|<label>;<key>:<label>, each key and label URI-encoded. Anything unknown is dropped.
+const enc = encodeURIComponent;
+const dec = s => { try { return decodeURIComponent(s); } catch { return null; } };
+function readFilters(text, filters) {
+  const out = {};
+  for (const part of String(text || '').split(';')) {
+    const at = part.indexOf(':');
+    if (at < 1) continue;
+    const filter = filters.find(x => x.key === dec(part.slice(0, at)));
+    if (!filter) continue;
+    const picked = [...new Set(part.slice(at + 1).split('|').map(l => filter.cats.indexOf(dec(l))).filter(k => k >= 0))].sort((a, b) => a - b);
+    if (picked.length) out[filter.key] = picked;
+  }
+  return out;
+}
+const writeFilters = (f, filters) => chosen(f).map(([key, picked]) => { const filter = filters.find(x => x.key === key);
+  return filter ? `${enc(key)}:${picked.map(k => enc(filter.cats[k])).join('|')}` : null; }).filter(Boolean).join(';');
+export function parseExplore(params, DB) {
+  const p = params || {}, tab = EXPLORE_TABS.includes(p.tab) ? p.tab : 'measures';
+  const mf = tab === 'measures' ? {} : readFilters(p.mf, DB.explore.measures);
+  return { tab, f: readFilters(p.f, DB.explore[tab]), mf: Object.keys(mf).length ? mf : null };
+}
+export function formatExplore(state, DB) {
+  const out = { tab: state.tab }, f = writeFilters(state.f, DB.explore[state.tab]);
+  const mf = state.tab === 'measures' ? '' : writeFilters(state.mf, DB.explore.measures);
+  if (f) out.f = f;
+  if (mf) out.mf = mf;
+  if (state.tab === 'instruments' && !f) out.any = '1';        // says "no filter at all", so the tab does not fall back to named instruments
+  return out;
+}
+// The state the page opens in. The Instruments tab opens on the named instruments when the address names no filter,
+// so its headline agrees with the rest of the site; "any=1" in the address means the reader removed that choice.
+export function exploreState(params, DB) {
+  const p = params || {}, state = parseExplore(p, DB);
+  if (state.tab === 'instruments' && !Object.keys(state.f).length && p.any !== '1') {
+    const kind = DB.explore.instruments.find(x => x.key === 'kind');
+    state.f = { kind: [kind.cats.indexOf('Named instrument')] };
+  }
+  return state;
+}
+// Filters given by their labels, as {key: [label, ...]}, turned into positions. Null if a key or a label is unknown.
+export function filtersFromLabels(DB, tab, labels) {
+  const out = {};
+  for (const [key, list] of Object.entries(labels || {})) {
+    const filter = DB.explore[tab].find(x => x.key === key);
+    if (!filter) return null;
+    const picked = list.map(l => filter.cats.indexOf(l));
+    if (picked.some(k => k < 0)) return null;
+    out[key] = [...new Set(picked)].sort((a, b) => a - b);
+  }
+  return out;
+}
+
+// The headline of a tab: how many rows match, out of how many, and what they are. On the Instruments tab the total
+// and the unit follow the kinds chosen, so that named instruments are never mixed with the other two kinds unasked.
+const KIND_UNIT = { 'Named instrument': 'named instruments', 'Named tracking system': 'named tracking systems', 'Type of study-specific items': 'types of study-specific items' };
+export function exploreHeadline(DB, tab, f, mf) {
+  const n = exploreCount(DB, tab, f, mf), rows = exploreRows(DB, tab);
+  if (tab !== 'instruments') return { n, N: rows.length, unit: tab };
+  const kind = DB.explore.instruments.find(x => x.key === 'kind'), picked = ((f || {}).kind || []).map(k => kind.cats[k]);
+  if (!picked.length) return { n, N: rows.length, unit: 'entries (named instruments, named tracking systems and types of study-specific items)' };
+  const units = picked.map(k => KIND_UNIT[k] || k.toLowerCase());
+  return { n, N: rows.filter(r => picked.includes(kindOf(r))).length, unit: units.length > 1 ? `${units.slice(0, -1).join(', ')} and ${units.at(-1)}` : units[0] };
+}
+
+// A door: a number on a page that opens Explore on the rows it counts. labels is {filter key: [category label, ...]};
+// shown is the number on screen. There is a door only if Explore, given those filters, counts exactly that number.
+export function door(DB, tab, labels, shown) {
+  if (!EXPLORE_TABS.includes(tab) || !Number.isFinite(shown)) return null;
+  const f = filtersFromLabels(DB, tab, labels);
+  if (!f || exploreCount(DB, tab, f, null) !== shown) return null;
+  return { tab, f, mf: null };
+}

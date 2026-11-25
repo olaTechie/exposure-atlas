@@ -12,6 +12,7 @@ adolescents aged 0 to 17, carried out for the Robert Koch Institute (Unit 27).
 - Validated instruments and the evidence behind them.
 - A tailoring matrix of health theme by analytical dimension for each age band.
 - Gaps in the measurement landscape and the response each calls for.
+- An Explore page where filters combine over the measures, the instruments and the sources; the address holds the view.
 - The included sources, and tables to download.
 
 ## Data
@@ -21,7 +22,7 @@ counting rules of its own.
 
 ## How the site is updated
 
-A push to `main` runs the page-rule tests (`node test_logic.mjs`) and, if they pass, redeploys the site with GitHub
+A push to `main` runs the page-rule tests (`node test_logic.mjs`, which also checks the Explore filters against the counts in `test_fixtures/`) and, if they pass, redeploys the site with GitHub
 Pages. The site is static: `index.html`, `css/`, `js/`, `data/hub.json` and `downloads/`.
 
 ## Citation

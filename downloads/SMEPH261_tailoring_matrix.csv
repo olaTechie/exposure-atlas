@@ -1,176 +1,176 @@
-﻿Age band,Health theme,Analytical dimension,Tools in cell (n),"Validated, usable, right reporter (n)","Of these, main focus (n)","Of these, meeting minimum evidence (n)","Of these, main focus and minimum evidence (n)",Validated tools,"Of these, resting on a single validating study (n)","Colour, primary rule (minimum evidence)","Colour, without minimum-evidence condition"
-All ages,Mental health,Screen time/duration,29,1,0,1,0,SNAIS,1,Green,Green
-All ages,Mental health,Platform engagement,33,4,2,4,2,"SNAIS, ADTI, Content-Specific Social Media Activities Scale, SMS",4,Green,Green
-All ages,Mental health,Motivations for use,18,3,2,3,2,"SNAIS, ADTI, SMS",3,Green,Green
-All ages,Mental health,Content exposure,14,1,1,1,1,Content-Specific Social Media Activities Scale,1,Green,Green
-All ages,Mental health,Contextual factors,16,0,0,0,0,,0,Amber,Amber
-All ages,Substance use and marketing exposure,Screen time/duration,9,0,0,0,0,,0,Amber,Amber
-All ages,Substance use and marketing exposure,Platform engagement,10,0,0,0,0,,0,Amber,Amber
-All ages,Substance use and marketing exposure,Motivations for use,3,1,1,1,1,Social media use motivation scale,1,Green,Green
-All ages,Substance use and marketing exposure,Content exposure,5,0,0,0,0,,0,Amber,Amber
-All ages,Substance use and marketing exposure,Contextual factors,5,0,0,0,0,,0,Amber,Amber
-All ages,Digital health literacy,Screen time/duration,2,0,0,0,0,,0,Amber,Amber
-All ages,Digital health literacy,Platform engagement,4,0,0,0,0,,0,Amber,Amber
-All ages,Digital health literacy,Motivations for use,1,0,0,0,0,,0,Amber,Amber
-All ages,Digital health literacy,Content exposure,2,0,0,0,0,,0,Amber,Amber
-All ages,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
-All ages,Body image and disordered eating,Screen time/duration,13,0,0,0,0,,0,Amber,Amber
-All ages,Body image and disordered eating,Platform engagement,18,1,0,1,0,ADTI,1,Green,Green
-All ages,Body image and disordered eating,Motivations for use,6,1,1,1,1,ADTI,1,Green,Green
-All ages,Body image and disordered eating,Content exposure,9,0,0,0,0,,0,Amber,Amber
-All ages,Body image and disordered eating,Contextual factors,3,0,0,0,0,,0,Amber,Amber
-All ages,Sedentary behaviour and physical activity,Screen time/duration,23,1,1,0,0,TechU-Q,1,Amber,Green
-All ages,Sedentary behaviour and physical activity,Platform engagement,18,2,0,1,0,"TechU-Q, ADTI",2,Green,Green
-All ages,Sedentary behaviour and physical activity,Motivations for use,8,2,1,1,1,"TechU-Q, ADTI",2,Green,Green
-All ages,Sedentary behaviour and physical activity,Content exposure,6,0,0,0,0,,0,Amber,Amber
-All ages,Sedentary behaviour and physical activity,Contextual factors,15,0,0,0,0,,0,Amber,Amber
-All ages,"Digital violence, including cyberbullying",Screen time/duration,13,0,0,0,0,,0,Amber,Amber
-All ages,"Digital violence, including cyberbullying",Platform engagement,16,2,1,2,1,"SN-PEQ, SMS",2,Green,Green
-All ages,"Digital violence, including cyberbullying",Motivations for use,9,1,0,1,0,SMS,1,Green,Green
-All ages,"Digital violence, including cyberbullying",Content exposure,10,1,1,1,1,SN-PEQ,1,Green,Green
-All ages,"Digital violence, including cyberbullying",Contextual factors,5,0,0,0,0,,0,Amber,Amber
+﻿Age band,Health theme,Analytical dimension,Instruments and item types in cell (n),"Validated, usable, right reporter (n)","Of these, main focus (n)","Of these, meeting minimum evidence (n)","Of these, main focus and minimum evidence (n)",Validated instruments in cell,"Of these, resting on a single validating study (n)","Colour, primary rule (minimum evidence)","Colour, without minimum-evidence condition"
 All ages,Sleep health and circadian disruption,Screen time/duration,22,0,0,0,0,,0,Amber,Amber
 All ages,Sleep health and circadian disruption,Platform engagement,22,1,0,1,0,ADTI,1,Green,Green
 All ages,Sleep health and circadian disruption,Motivations for use,6,1,1,1,1,ADTI,1,Green,Green
 All ages,Sleep health and circadian disruption,Content exposure,9,0,0,0,0,,0,Amber,Amber
 All ages,Sleep health and circadian disruption,Contextual factors,21,0,0,0,0,,0,Amber,Amber
-Under 8,Mental health,Screen time/duration,4,0,0,0,0,,0,Amber,Amber
-Under 8,Mental health,Platform engagement,3,0,0,0,0,,0,Amber,Amber
-Under 8,Mental health,Motivations for use,1,0,0,0,0,,0,Amber,Amber
-Under 8,Mental health,Content exposure,1,0,0,0,0,,0,Amber,Amber
-Under 8,Mental health,Contextual factors,0,0,0,0,0,,0,Red,Red
-Under 8,Substance use and marketing exposure,Screen time/duration,1,0,0,0,0,,0,Amber,Amber
-Under 8,Substance use and marketing exposure,Platform engagement,1,0,0,0,0,,0,Amber,Amber
-Under 8,Substance use and marketing exposure,Motivations for use,0,0,0,0,0,,0,Red,Red
-Under 8,Substance use and marketing exposure,Content exposure,1,0,0,0,0,,0,Amber,Amber
-Under 8,Substance use and marketing exposure,Contextual factors,0,0,0,0,0,,0,Red,Red
-Under 8,Digital health literacy,Screen time/duration,0,0,0,0,0,,0,Red,Red
-Under 8,Digital health literacy,Platform engagement,1,0,0,0,0,,0,Amber,Amber
-Under 8,Digital health literacy,Motivations for use,0,0,0,0,0,,0,Red,Red
-Under 8,Digital health literacy,Content exposure,1,0,0,0,0,,0,Amber,Amber
-Under 8,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
-Under 8,Body image and disordered eating,Screen time/duration,0,0,0,0,0,,0,Red,Red
-Under 8,Body image and disordered eating,Platform engagement,0,0,0,0,0,,0,Red,Red
-Under 8,Body image and disordered eating,Motivations for use,0,0,0,0,0,,0,Red,Red
-Under 8,Body image and disordered eating,Content exposure,0,0,0,0,0,,0,Red,Red
-Under 8,Body image and disordered eating,Contextual factors,0,0,0,0,0,,0,Red,Red
-Under 8,Sedentary behaviour and physical activity,Screen time/duration,7,1,1,0,0,TechU-Q,1,Amber,Green
-Under 8,Sedentary behaviour and physical activity,Platform engagement,5,1,0,0,0,TechU-Q,1,Amber,Green
-Under 8,Sedentary behaviour and physical activity,Motivations for use,3,1,0,0,0,TechU-Q,1,Amber,Green
-Under 8,Sedentary behaviour and physical activity,Content exposure,1,0,0,0,0,,0,Amber,Amber
-Under 8,Sedentary behaviour and physical activity,Contextual factors,4,0,0,0,0,,0,Amber,Amber
-Under 8,"Digital violence, including cyberbullying",Screen time/duration,0,0,0,0,0,,0,Red,Red
-Under 8,"Digital violence, including cyberbullying",Platform engagement,0,0,0,0,0,,0,Red,Red
-Under 8,"Digital violence, including cyberbullying",Motivations for use,0,0,0,0,0,,0,Red,Red
-Under 8,"Digital violence, including cyberbullying",Content exposure,0,0,0,0,0,,0,Red,Red
-Under 8,"Digital violence, including cyberbullying",Contextual factors,0,0,0,0,0,,0,Red,Red
+All ages,Sedentary behaviour and physical activity,Screen time/duration,23,1,1,0,0,TechU-Q,1,Amber,Green
+All ages,Sedentary behaviour and physical activity,Platform engagement,18,2,0,1,0,"TechU-Q, ADTI",2,Green,Green
+All ages,Sedentary behaviour and physical activity,Motivations for use,8,2,1,1,1,"TechU-Q, ADTI",2,Green,Green
+All ages,Sedentary behaviour and physical activity,Content exposure,6,0,0,0,0,,0,Amber,Amber
+All ages,Sedentary behaviour and physical activity,Contextual factors,15,0,0,0,0,,0,Amber,Amber
+All ages,Substance use and marketing exposure,Screen time/duration,9,0,0,0,0,,0,Amber,Amber
+All ages,Substance use and marketing exposure,Platform engagement,10,0,0,0,0,,0,Amber,Amber
+All ages,Substance use and marketing exposure,Motivations for use,3,1,1,1,1,Social media use motivation scale,1,Green,Green
+All ages,Substance use and marketing exposure,Content exposure,5,0,0,0,0,,0,Amber,Amber
+All ages,Substance use and marketing exposure,Contextual factors,5,0,0,0,0,,0,Amber,Amber
+All ages,Body image and disordered eating,Screen time/duration,13,0,0,0,0,,0,Amber,Amber
+All ages,Body image and disordered eating,Platform engagement,18,1,0,1,0,ADTI,1,Green,Green
+All ages,Body image and disordered eating,Motivations for use,6,1,1,1,1,ADTI,1,Green,Green
+All ages,Body image and disordered eating,Content exposure,9,0,0,0,0,,0,Amber,Amber
+All ages,Body image and disordered eating,Contextual factors,3,0,0,0,0,,0,Amber,Amber
+All ages,Digital health literacy,Screen time/duration,2,0,0,0,0,,0,Amber,Amber
+All ages,Digital health literacy,Platform engagement,4,0,0,0,0,,0,Amber,Amber
+All ages,Digital health literacy,Motivations for use,1,0,0,0,0,,0,Amber,Amber
+All ages,Digital health literacy,Content exposure,2,0,0,0,0,,0,Amber,Amber
+All ages,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
+All ages,Mental health,Screen time/duration,29,1,0,1,0,SNAIS,1,Green,Green
+All ages,Mental health,Platform engagement,33,4,2,4,2,"SNAIS, ADTI, Content-Specific Social Media Activities Scale, SMS",4,Green,Green
+All ages,Mental health,Motivations for use,18,3,2,3,2,"SNAIS, ADTI, SMS",3,Green,Green
+All ages,Mental health,Content exposure,14,1,1,1,1,Content-Specific Social Media Activities Scale,1,Green,Green
+All ages,Mental health,Contextual factors,16,0,0,0,0,,0,Amber,Amber
+All ages,"Digital violence, including cyberbullying",Screen time/duration,13,0,0,0,0,,0,Amber,Amber
+All ages,"Digital violence, including cyberbullying",Platform engagement,16,2,1,2,1,"SN-PEQ, SMS",2,Green,Green
+All ages,"Digital violence, including cyberbullying",Motivations for use,9,1,0,1,0,SMS,1,Green,Green
+All ages,"Digital violence, including cyberbullying",Content exposure,10,1,1,1,1,SN-PEQ,1,Green,Green
+All ages,"Digital violence, including cyberbullying",Contextual factors,5,0,0,0,0,,0,Amber,Amber
 Under 8,Sleep health and circadian disruption,Screen time/duration,5,0,0,0,0,,0,Amber,Amber
 Under 8,Sleep health and circadian disruption,Platform engagement,2,0,0,0,0,,0,Amber,Amber
 Under 8,Sleep health and circadian disruption,Motivations for use,1,0,0,0,0,,0,Amber,Amber
 Under 8,Sleep health and circadian disruption,Content exposure,1,0,0,0,0,,0,Amber,Amber
 Under 8,Sleep health and circadian disruption,Contextual factors,4,0,0,0,0,,0,Amber,Amber
-8–10,Mental health,Screen time/duration,17,0,0,0,0,,0,Amber,Amber
-8–10,Mental health,Platform engagement,15,0,0,0,0,,0,Amber,Amber
-8–10,Mental health,Motivations for use,7,0,0,0,0,,0,Amber,Amber
-8–10,Mental health,Content exposure,7,0,0,0,0,,0,Amber,Amber
-8–10,Mental health,Contextual factors,10,0,0,0,0,,0,Amber,Amber
-8–10,Substance use and marketing exposure,Screen time/duration,3,0,0,0,0,,0,Amber,Amber
-8–10,Substance use and marketing exposure,Platform engagement,4,0,0,0,0,,0,Amber,Amber
-8–10,Substance use and marketing exposure,Motivations for use,0,0,0,0,0,,0,Red,Red
-8–10,Substance use and marketing exposure,Content exposure,2,0,0,0,0,,0,Amber,Amber
-8–10,Substance use and marketing exposure,Contextual factors,0,0,0,0,0,,0,Red,Red
-8–10,Digital health literacy,Screen time/duration,1,0,0,0,0,,0,Amber,Amber
-8–10,Digital health literacy,Platform engagement,1,0,0,0,0,,0,Amber,Amber
-8–10,Digital health literacy,Motivations for use,0,0,0,0,0,,0,Red,Red
-8–10,Digital health literacy,Content exposure,1,0,0,0,0,,0,Amber,Amber
-8–10,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
-8–10,Body image and disordered eating,Screen time/duration,6,0,0,0,0,,0,Amber,Amber
-8–10,Body image and disordered eating,Platform engagement,9,0,0,0,0,,0,Amber,Amber
-8–10,Body image and disordered eating,Motivations for use,2,0,0,0,0,,0,Amber,Amber
-8–10,Body image and disordered eating,Content exposure,6,0,0,0,0,,0,Amber,Amber
-8–10,Body image and disordered eating,Contextual factors,2,0,0,0,0,,0,Amber,Amber
-8–10,Sedentary behaviour and physical activity,Screen time/duration,12,0,0,0,0,,0,Amber,Amber
-8–10,Sedentary behaviour and physical activity,Platform engagement,11,0,0,0,0,,0,Amber,Amber
-8–10,Sedentary behaviour and physical activity,Motivations for use,2,0,0,0,0,,0,Amber,Amber
-8–10,Sedentary behaviour and physical activity,Content exposure,4,0,0,0,0,,0,Amber,Amber
-8–10,Sedentary behaviour and physical activity,Contextual factors,9,0,0,0,0,,0,Amber,Amber
-8–10,"Digital violence, including cyberbullying",Screen time/duration,4,0,0,0,0,,0,Amber,Amber
-8–10,"Digital violence, including cyberbullying",Platform engagement,4,0,0,0,0,,0,Amber,Amber
-8–10,"Digital violence, including cyberbullying",Motivations for use,1,0,0,0,0,,0,Amber,Amber
-8–10,"Digital violence, including cyberbullying",Content exposure,4,0,0,0,0,,0,Amber,Amber
-8–10,"Digital violence, including cyberbullying",Contextual factors,2,0,0,0,0,,0,Amber,Amber
+Under 8,Sedentary behaviour and physical activity,Screen time/duration,7,1,1,0,0,TechU-Q,1,Amber,Green
+Under 8,Sedentary behaviour and physical activity,Platform engagement,5,1,0,0,0,TechU-Q,1,Amber,Green
+Under 8,Sedentary behaviour and physical activity,Motivations for use,3,1,0,0,0,TechU-Q,1,Amber,Green
+Under 8,Sedentary behaviour and physical activity,Content exposure,1,0,0,0,0,,0,Amber,Amber
+Under 8,Sedentary behaviour and physical activity,Contextual factors,4,0,0,0,0,,0,Amber,Amber
+Under 8,Substance use and marketing exposure,Screen time/duration,1,0,0,0,0,,0,Amber,Amber
+Under 8,Substance use and marketing exposure,Platform engagement,1,0,0,0,0,,0,Amber,Amber
+Under 8,Substance use and marketing exposure,Motivations for use,0,0,0,0,0,,0,Red,Red
+Under 8,Substance use and marketing exposure,Content exposure,1,0,0,0,0,,0,Amber,Amber
+Under 8,Substance use and marketing exposure,Contextual factors,0,0,0,0,0,,0,Red,Red
+Under 8,Body image and disordered eating,Screen time/duration,0,0,0,0,0,,0,Red,Red
+Under 8,Body image and disordered eating,Platform engagement,0,0,0,0,0,,0,Red,Red
+Under 8,Body image and disordered eating,Motivations for use,0,0,0,0,0,,0,Red,Red
+Under 8,Body image and disordered eating,Content exposure,0,0,0,0,0,,0,Red,Red
+Under 8,Body image and disordered eating,Contextual factors,0,0,0,0,0,,0,Red,Red
+Under 8,Digital health literacy,Screen time/duration,0,0,0,0,0,,0,Red,Red
+Under 8,Digital health literacy,Platform engagement,1,0,0,0,0,,0,Amber,Amber
+Under 8,Digital health literacy,Motivations for use,0,0,0,0,0,,0,Red,Red
+Under 8,Digital health literacy,Content exposure,1,0,0,0,0,,0,Amber,Amber
+Under 8,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
+Under 8,Mental health,Screen time/duration,4,0,0,0,0,,0,Amber,Amber
+Under 8,Mental health,Platform engagement,3,0,0,0,0,,0,Amber,Amber
+Under 8,Mental health,Motivations for use,1,0,0,0,0,,0,Amber,Amber
+Under 8,Mental health,Content exposure,1,0,0,0,0,,0,Amber,Amber
+Under 8,Mental health,Contextual factors,0,0,0,0,0,,0,Red,Red
+Under 8,"Digital violence, including cyberbullying",Screen time/duration,0,0,0,0,0,,0,Red,Red
+Under 8,"Digital violence, including cyberbullying",Platform engagement,0,0,0,0,0,,0,Red,Red
+Under 8,"Digital violence, including cyberbullying",Motivations for use,0,0,0,0,0,,0,Red,Red
+Under 8,"Digital violence, including cyberbullying",Content exposure,0,0,0,0,0,,0,Red,Red
+Under 8,"Digital violence, including cyberbullying",Contextual factors,0,0,0,0,0,,0,Red,Red
 8–10,Sleep health and circadian disruption,Screen time/duration,13,0,0,0,0,,0,Amber,Amber
 8–10,Sleep health and circadian disruption,Platform engagement,10,0,0,0,0,,0,Amber,Amber
 8–10,Sleep health and circadian disruption,Motivations for use,1,0,0,0,0,,0,Amber,Amber
 8–10,Sleep health and circadian disruption,Content exposure,5,0,0,0,0,,0,Amber,Amber
 8–10,Sleep health and circadian disruption,Contextual factors,11,0,0,0,0,,0,Amber,Amber
-11–14,Mental health,Screen time/duration,27,0,0,0,0,,0,Amber,Amber
-11–14,Mental health,Platform engagement,32,3,1,3,1,"ADTI, Content-Specific Social Media Activities Scale, SMS",3,Green,Green
-11–14,Mental health,Motivations for use,18,2,1,2,1,"ADTI, SMS",2,Green,Green
-11–14,Mental health,Content exposure,12,1,1,1,1,Content-Specific Social Media Activities Scale,1,Green,Green
-11–14,Mental health,Contextual factors,15,0,0,0,0,,0,Amber,Amber
-11–14,Substance use and marketing exposure,Screen time/duration,9,0,0,0,0,,0,Amber,Amber
-11–14,Substance use and marketing exposure,Platform engagement,9,0,0,0,0,,0,Amber,Amber
-11–14,Substance use and marketing exposure,Motivations for use,2,1,1,1,1,Social media use motivation scale,1,Green,Green
-11–14,Substance use and marketing exposure,Content exposure,4,0,0,0,0,,0,Amber,Amber
-11–14,Substance use and marketing exposure,Contextual factors,4,0,0,0,0,,0,Amber,Amber
-11–14,Digital health literacy,Screen time/duration,2,0,0,0,0,,0,Amber,Amber
-11–14,Digital health literacy,Platform engagement,4,0,0,0,0,,0,Amber,Amber
-11–14,Digital health literacy,Motivations for use,1,0,0,0,0,,0,Amber,Amber
-11–14,Digital health literacy,Content exposure,2,0,0,0,0,,0,Amber,Amber
-11–14,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
-11–14,Body image and disordered eating,Screen time/duration,10,0,0,0,0,,0,Amber,Amber
-11–14,Body image and disordered eating,Platform engagement,16,1,0,1,0,ADTI,1,Green,Green
-11–14,Body image and disordered eating,Motivations for use,6,1,1,1,1,ADTI,1,Green,Green
-11–14,Body image and disordered eating,Content exposure,7,0,0,0,0,,0,Amber,Amber
-11–14,Body image and disordered eating,Contextual factors,2,0,0,0,0,,0,Amber,Amber
-11–14,Sedentary behaviour and physical activity,Screen time/duration,16,0,0,0,0,,0,Amber,Amber
-11–14,Sedentary behaviour and physical activity,Platform engagement,14,1,0,1,0,ADTI,1,Green,Green
-11–14,Sedentary behaviour and physical activity,Motivations for use,4,1,1,1,1,ADTI,1,Green,Green
-11–14,Sedentary behaviour and physical activity,Content exposure,3,0,0,0,0,,0,Amber,Amber
-11–14,Sedentary behaviour and physical activity,Contextual factors,12,0,0,0,0,,0,Amber,Amber
-11–14,"Digital violence, including cyberbullying",Screen time/duration,12,0,0,0,0,,0,Amber,Amber
-11–14,"Digital violence, including cyberbullying",Platform engagement,16,1,1,1,1,SMS,1,Green,Green
-11–14,"Digital violence, including cyberbullying",Motivations for use,8,1,0,1,0,SMS,1,Green,Green
-11–14,"Digital violence, including cyberbullying",Content exposure,9,0,0,0,0,,0,Amber,Amber
-11–14,"Digital violence, including cyberbullying",Contextual factors,4,0,0,0,0,,0,Amber,Amber
+8–10,Sedentary behaviour and physical activity,Screen time/duration,12,0,0,0,0,,0,Amber,Amber
+8–10,Sedentary behaviour and physical activity,Platform engagement,11,0,0,0,0,,0,Amber,Amber
+8–10,Sedentary behaviour and physical activity,Motivations for use,2,0,0,0,0,,0,Amber,Amber
+8–10,Sedentary behaviour and physical activity,Content exposure,4,0,0,0,0,,0,Amber,Amber
+8–10,Sedentary behaviour and physical activity,Contextual factors,9,0,0,0,0,,0,Amber,Amber
+8–10,Substance use and marketing exposure,Screen time/duration,3,0,0,0,0,,0,Amber,Amber
+8–10,Substance use and marketing exposure,Platform engagement,4,0,0,0,0,,0,Amber,Amber
+8–10,Substance use and marketing exposure,Motivations for use,0,0,0,0,0,,0,Red,Red
+8–10,Substance use and marketing exposure,Content exposure,2,0,0,0,0,,0,Amber,Amber
+8–10,Substance use and marketing exposure,Contextual factors,0,0,0,0,0,,0,Red,Red
+8–10,Body image and disordered eating,Screen time/duration,6,0,0,0,0,,0,Amber,Amber
+8–10,Body image and disordered eating,Platform engagement,9,0,0,0,0,,0,Amber,Amber
+8–10,Body image and disordered eating,Motivations for use,2,0,0,0,0,,0,Amber,Amber
+8–10,Body image and disordered eating,Content exposure,6,0,0,0,0,,0,Amber,Amber
+8–10,Body image and disordered eating,Contextual factors,2,0,0,0,0,,0,Amber,Amber
+8–10,Digital health literacy,Screen time/duration,1,0,0,0,0,,0,Amber,Amber
+8–10,Digital health literacy,Platform engagement,1,0,0,0,0,,0,Amber,Amber
+8–10,Digital health literacy,Motivations for use,0,0,0,0,0,,0,Red,Red
+8–10,Digital health literacy,Content exposure,1,0,0,0,0,,0,Amber,Amber
+8–10,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
+8–10,Mental health,Screen time/duration,17,0,0,0,0,,0,Amber,Amber
+8–10,Mental health,Platform engagement,15,0,0,0,0,,0,Amber,Amber
+8–10,Mental health,Motivations for use,7,0,0,0,0,,0,Amber,Amber
+8–10,Mental health,Content exposure,7,0,0,0,0,,0,Amber,Amber
+8–10,Mental health,Contextual factors,10,0,0,0,0,,0,Amber,Amber
+8–10,"Digital violence, including cyberbullying",Screen time/duration,4,0,0,0,0,,0,Amber,Amber
+8–10,"Digital violence, including cyberbullying",Platform engagement,4,0,0,0,0,,0,Amber,Amber
+8–10,"Digital violence, including cyberbullying",Motivations for use,1,0,0,0,0,,0,Amber,Amber
+8–10,"Digital violence, including cyberbullying",Content exposure,4,0,0,0,0,,0,Amber,Amber
+8–10,"Digital violence, including cyberbullying",Contextual factors,2,0,0,0,0,,0,Amber,Amber
 11–14,Sleep health and circadian disruption,Screen time/duration,18,0,0,0,0,,0,Amber,Amber
 11–14,Sleep health and circadian disruption,Platform engagement,20,1,0,1,0,ADTI,1,Green,Green
 11–14,Sleep health and circadian disruption,Motivations for use,4,1,1,1,1,ADTI,1,Green,Green
 11–14,Sleep health and circadian disruption,Content exposure,5,0,0,0,0,,0,Amber,Amber
 11–14,Sleep health and circadian disruption,Contextual factors,17,0,0,0,0,,0,Amber,Amber
-15–17,Mental health,Screen time/duration,25,0,0,0,0,,0,Amber,Amber
-15–17,Mental health,Platform engagement,31,3,1,3,1,"ADTI, Content-Specific Social Media Activities Scale, SMS",3,Green,Green
-15–17,Mental health,Motivations for use,16,2,1,2,1,"ADTI, SMS",2,Green,Green
-15–17,Mental health,Content exposure,12,1,1,1,1,Content-Specific Social Media Activities Scale,1,Green,Green
-15–17,Mental health,Contextual factors,14,0,0,0,0,,0,Amber,Amber
-15–17,Substance use and marketing exposure,Screen time/duration,9,0,0,0,0,,0,Amber,Amber
-15–17,Substance use and marketing exposure,Platform engagement,9,0,0,0,0,,0,Amber,Amber
-15–17,Substance use and marketing exposure,Motivations for use,3,1,1,1,1,Social media use motivation scale,1,Green,Green
-15–17,Substance use and marketing exposure,Content exposure,5,0,0,0,0,,0,Amber,Amber
-15–17,Substance use and marketing exposure,Contextual factors,3,0,0,0,0,,0,Amber,Amber
-15–17,Digital health literacy,Screen time/duration,2,0,0,0,0,,0,Amber,Amber
-15–17,Digital health literacy,Platform engagement,4,0,0,0,0,,0,Amber,Amber
-15–17,Digital health literacy,Motivations for use,1,0,0,0,0,,0,Amber,Amber
-15–17,Digital health literacy,Content exposure,2,0,0,0,0,,0,Amber,Amber
-15–17,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
-15–17,Body image and disordered eating,Screen time/duration,11,0,0,0,0,,0,Amber,Amber
-15–17,Body image and disordered eating,Platform engagement,15,1,0,1,0,ADTI,1,Green,Green
-15–17,Body image and disordered eating,Motivations for use,6,1,1,1,1,ADTI,1,Green,Green
-15–17,Body image and disordered eating,Content exposure,6,0,0,0,0,,0,Amber,Amber
-15–17,Body image and disordered eating,Contextual factors,0,0,0,0,0,,0,Red,Red
-15–17,Sedentary behaviour and physical activity,Screen time/duration,15,0,0,0,0,,0,Amber,Amber
-15–17,Sedentary behaviour and physical activity,Platform engagement,15,1,0,1,0,ADTI,1,Green,Green
-15–17,Sedentary behaviour and physical activity,Motivations for use,5,1,1,1,1,ADTI,1,Green,Green
-15–17,Sedentary behaviour and physical activity,Content exposure,2,0,0,0,0,,0,Amber,Amber
-15–17,Sedentary behaviour and physical activity,Contextual factors,10,0,0,0,0,,0,Amber,Amber
-15–17,"Digital violence, including cyberbullying",Screen time/duration,11,0,0,0,0,,0,Amber,Amber
-15–17,"Digital violence, including cyberbullying",Platform engagement,13,2,1,2,1,"SN-PEQ, SMS",2,Green,Green
-15–17,"Digital violence, including cyberbullying",Motivations for use,8,1,0,1,0,SMS,1,Green,Green
-15–17,"Digital violence, including cyberbullying",Content exposure,10,1,1,1,1,SN-PEQ,1,Green,Green
-15–17,"Digital violence, including cyberbullying",Contextual factors,4,0,0,0,0,,0,Amber,Amber
+11–14,Sedentary behaviour and physical activity,Screen time/duration,16,0,0,0,0,,0,Amber,Amber
+11–14,Sedentary behaviour and physical activity,Platform engagement,14,1,0,1,0,ADTI,1,Green,Green
+11–14,Sedentary behaviour and physical activity,Motivations for use,4,1,1,1,1,ADTI,1,Green,Green
+11–14,Sedentary behaviour and physical activity,Content exposure,3,0,0,0,0,,0,Amber,Amber
+11–14,Sedentary behaviour and physical activity,Contextual factors,12,0,0,0,0,,0,Amber,Amber
+11–14,Substance use and marketing exposure,Screen time/duration,9,0,0,0,0,,0,Amber,Amber
+11–14,Substance use and marketing exposure,Platform engagement,9,0,0,0,0,,0,Amber,Amber
+11–14,Substance use and marketing exposure,Motivations for use,2,1,1,1,1,Social media use motivation scale,1,Green,Green
+11–14,Substance use and marketing exposure,Content exposure,4,0,0,0,0,,0,Amber,Amber
+11–14,Substance use and marketing exposure,Contextual factors,4,0,0,0,0,,0,Amber,Amber
+11–14,Body image and disordered eating,Screen time/duration,10,0,0,0,0,,0,Amber,Amber
+11–14,Body image and disordered eating,Platform engagement,16,1,0,1,0,ADTI,1,Green,Green
+11–14,Body image and disordered eating,Motivations for use,6,1,1,1,1,ADTI,1,Green,Green
+11–14,Body image and disordered eating,Content exposure,7,0,0,0,0,,0,Amber,Amber
+11–14,Body image and disordered eating,Contextual factors,2,0,0,0,0,,0,Amber,Amber
+11–14,Digital health literacy,Screen time/duration,2,0,0,0,0,,0,Amber,Amber
+11–14,Digital health literacy,Platform engagement,4,0,0,0,0,,0,Amber,Amber
+11–14,Digital health literacy,Motivations for use,1,0,0,0,0,,0,Amber,Amber
+11–14,Digital health literacy,Content exposure,2,0,0,0,0,,0,Amber,Amber
+11–14,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
+11–14,Mental health,Screen time/duration,27,0,0,0,0,,0,Amber,Amber
+11–14,Mental health,Platform engagement,32,3,1,3,1,"ADTI, Content-Specific Social Media Activities Scale, SMS",3,Green,Green
+11–14,Mental health,Motivations for use,18,2,1,2,1,"ADTI, SMS",2,Green,Green
+11–14,Mental health,Content exposure,12,1,1,1,1,Content-Specific Social Media Activities Scale,1,Green,Green
+11–14,Mental health,Contextual factors,15,0,0,0,0,,0,Amber,Amber
+11–14,"Digital violence, including cyberbullying",Screen time/duration,12,0,0,0,0,,0,Amber,Amber
+11–14,"Digital violence, including cyberbullying",Platform engagement,16,1,1,1,1,SMS,1,Green,Green
+11–14,"Digital violence, including cyberbullying",Motivations for use,8,1,0,1,0,SMS,1,Green,Green
+11–14,"Digital violence, including cyberbullying",Content exposure,9,0,0,0,0,,0,Amber,Amber
+11–14,"Digital violence, including cyberbullying",Contextual factors,4,0,0,0,0,,0,Amber,Amber
 15–17,Sleep health and circadian disruption,Screen time/duration,17,0,0,0,0,,0,Amber,Amber
 15–17,Sleep health and circadian disruption,Platform engagement,19,1,0,1,0,ADTI,1,Green,Green
 15–17,Sleep health and circadian disruption,Motivations for use,4,1,1,1,1,ADTI,1,Green,Green
 15–17,Sleep health and circadian disruption,Content exposure,5,0,0,0,0,,0,Amber,Amber
 15–17,Sleep health and circadian disruption,Contextual factors,14,0,0,0,0,,0,Amber,Amber
+15–17,Sedentary behaviour and physical activity,Screen time/duration,15,0,0,0,0,,0,Amber,Amber
+15–17,Sedentary behaviour and physical activity,Platform engagement,15,1,0,1,0,ADTI,1,Green,Green
+15–17,Sedentary behaviour and physical activity,Motivations for use,5,1,1,1,1,ADTI,1,Green,Green
+15–17,Sedentary behaviour and physical activity,Content exposure,2,0,0,0,0,,0,Amber,Amber
+15–17,Sedentary behaviour and physical activity,Contextual factors,10,0,0,0,0,,0,Amber,Amber
+15–17,Substance use and marketing exposure,Screen time/duration,9,0,0,0,0,,0,Amber,Amber
+15–17,Substance use and marketing exposure,Platform engagement,9,0,0,0,0,,0,Amber,Amber
+15–17,Substance use and marketing exposure,Motivations for use,3,1,1,1,1,Social media use motivation scale,1,Green,Green
+15–17,Substance use and marketing exposure,Content exposure,5,0,0,0,0,,0,Amber,Amber
+15–17,Substance use and marketing exposure,Contextual factors,3,0,0,0,0,,0,Amber,Amber
+15–17,Body image and disordered eating,Screen time/duration,11,0,0,0,0,,0,Amber,Amber
+15–17,Body image and disordered eating,Platform engagement,15,1,0,1,0,ADTI,1,Green,Green
+15–17,Body image and disordered eating,Motivations for use,6,1,1,1,1,ADTI,1,Green,Green
+15–17,Body image and disordered eating,Content exposure,6,0,0,0,0,,0,Amber,Amber
+15–17,Body image and disordered eating,Contextual factors,0,0,0,0,0,,0,Red,Red
+15–17,Digital health literacy,Screen time/duration,2,0,0,0,0,,0,Amber,Amber
+15–17,Digital health literacy,Platform engagement,4,0,0,0,0,,0,Amber,Amber
+15–17,Digital health literacy,Motivations for use,1,0,0,0,0,,0,Amber,Amber
+15–17,Digital health literacy,Content exposure,2,0,0,0,0,,0,Amber,Amber
+15–17,Digital health literacy,Contextual factors,0,0,0,0,0,,0,Red,Red
+15–17,Mental health,Screen time/duration,25,0,0,0,0,,0,Amber,Amber
+15–17,Mental health,Platform engagement,31,3,1,3,1,"ADTI, Content-Specific Social Media Activities Scale, SMS",3,Green,Green
+15–17,Mental health,Motivations for use,16,2,1,2,1,"ADTI, SMS",2,Green,Green
+15–17,Mental health,Content exposure,12,1,1,1,1,Content-Specific Social Media Activities Scale,1,Green,Green
+15–17,Mental health,Contextual factors,14,0,0,0,0,,0,Amber,Amber
+15–17,"Digital violence, including cyberbullying",Screen time/duration,11,0,0,0,0,,0,Amber,Amber
+15–17,"Digital violence, including cyberbullying",Platform engagement,13,2,1,2,1,"SN-PEQ, SMS",2,Green,Green
+15–17,"Digital violence, including cyberbullying",Motivations for use,8,1,0,1,0,SMS,1,Green,Green
+15–17,"Digital violence, including cyberbullying",Content exposure,10,1,1,1,1,SN-PEQ,1,Green,Green
+15–17,"Digital violence, including cyberbullying",Contextual factors,4,0,0,0,0,,0,Amber,Amber
