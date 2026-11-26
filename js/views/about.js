@@ -8,7 +8,7 @@ export default function about(el, params, DB) {
 
   put(el,
     pageHead('About and methods',
-      'The Interactive Data Exploration and Visualisation Hub presents the results of SMEPH_261, a scoping review of the instruments and methods used to measure social media exposure in children and adolescents aged 0 to 17, carried out for the Robert Koch Institute.'),
+      'The Exposure Atlas presents the results of SMEPH_261, a scoping review of the instruments and methods used to measure social media exposure in children and adolescents aged 0 to 17, carried out for the Robert Koch Institute.'),
     panelBox('How this hub is organised', 'by the objectives of the review',
       h('div', { class: 'in' },
         h('p', {}, 'The Overview, the instrument inventory, Compare and Sources serve the primary objective: to map and compare the instruments and methods used to measure social media exposure in children and adolescents aged 0 to 17, ',
